@@ -32,4 +32,13 @@ require("lazy").setup({
   install = { colorscheme = { "habamax" } },
   -- automatically check for plugin updates
   checker = { enabled = true },
+  -- Debian ships treesitter parsers in /usr/lib/nvim/parser. lazy.nvim resets
+  -- the runtimepath by default and would drop that dir, so the runtime's
+  -- `vim.treesitter.start()` (ftplugin/lua.lua) fails with "no parser for 'lua'".
+  -- Keep it on the runtimepath here.
+  performance = {
+    rtp = {
+      paths = { "/usr/lib/nvim" },
+    },
+  },
 })
