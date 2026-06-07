@@ -69,6 +69,12 @@
         "type": "command",
         "command": "echo \"[$(date)] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/command_history.log"
       }]
+    }],
+    "Stop": [{
+      "hooks": [{
+        "type": "command",
+        "command": "powershell.exe -NoProfile -Command \"(New-Object Media.SoundPlayer 'C:\\Windows\\Media\\notify.wav').PlaySync()\" 2>/dev/null || true"
+      }]
     }]
   },
   "outputStyle": "Vampire Maid",
