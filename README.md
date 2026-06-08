@@ -33,6 +33,8 @@ nvim/
         ├── completion.lua    補完
         ├── conform.lua       フォーマッタ
         ├── noice.lua         コマンドライン（Ex）の中央ポップアップ表示
+        ├── oil.lua           バッファとして編集するファイラ
+        ├── toggleterm.lua    端末トグル（浮き窓）
         ├── treesitter.lua    シンタックスハイライト
         └── winresizer.lua    ウィンドウリサイズ
 ```
