@@ -4,6 +4,8 @@
 
 想定環境: WSL2 (Debian) を主とする Linux。
 
+> **前提**: アイコンを含む UI を正しく表示するため、[Nerd Font](https://www.nerdfonts.com/) を端末に導入し、ターミナルの表示フォントに設定しておくこと。
+
 ## 構成
 
 ```
@@ -30,6 +32,7 @@ nvim/
         ├── commentary.lua    コメントアウト
         ├── completion.lua    補完
         ├── conform.lua       フォーマッタ
+        ├── noice.lua         コマンドライン（Ex）の中央ポップアップ表示
         ├── treesitter.lua    シンタックスハイライト
         └── winresizer.lua    ウィンドウリサイズ
 ```
