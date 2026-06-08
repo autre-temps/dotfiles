@@ -11,6 +11,7 @@
 ```
 dotfiles/
 ├── nvim/      Neovim 設定（lazy.nvim ベース・Python 開発向け）→ ~/.config/nvim
+├── starship/  Starship プロンプト設定（Nord 配色・二段組・Nerd Font アイコン）→ ~/.config/starship.toml
 └── claude/    Claude Code 設定（settings / skills / output-styles）→ ~/.claude 配下
 ```
 
@@ -50,6 +51,16 @@ ln -s ~/dotfiles/nvim ~/.config/nvim
 - Python のツール類（ruff・pyright など）は [uv](https://github.com/astral-sh/uv) で global に導入する。Debian 素の python は `ensurepip` を欠き、pip / Mason 経由の導入が失敗するため。
 - LSP はプロジェクトの venv を検出して利用する。プロジェクトごとに venv を用意しておく。
 
+## starship
+
+[Starship](https://starship.rs/) のプロンプト設定。Nord 配色の二段組で、Git ブランチや言語ランタイム（Python / Node など、環境がある時だけ）を Nerd Font のアイコンで示す。背景色は使わず、文字色とアイコンだけで彩る。ファイル単体を `~/.config/starship.toml` へ symlink する。
+
+```bash
+ln -sfn ~/dotfiles/starship/starship.toml ~/.config/starship.toml
+```
+
+> アイコンの表示には **Nerd Font 版**のフォント（例: `JetBrainsMono Nerd Font`）を端末の表示フォントに設定すること。素の `JetBrains Mono` ではアイコンが表示されない。
+
 ## claude
 
 [Claude Code](https://claude.com/claude-code) の共有可能な設定（`settings.json` / `/commit` スキル / 出力スタイル）。`~/.claude` 配下には認証情報や履歴が同居するため館ごとは symlink せず、必要なファイルだけを個別に結ぶ。
@@ -70,6 +81,9 @@ git clone git@github.com:autre-temps/dotfiles.git ~/dotfiles
 
 # nvim
 ln -s ~/dotfiles/nvim ~/.config/nvim
+
+# starship
+ln -sfn ~/dotfiles/starship/starship.toml ~/.config/starship.toml
 
 # claude（詳細は claude/README.md）
 ln -sfn ~/dotfiles/claude/settings.json ~/.claude/settings.json
