@@ -9,7 +9,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     config = function()
         require("nvim-treesitter.configs").setup({
-            ensure_installed = { "python" },
+            ensure_installed = { "python", "markdown", "markdown_inline" },
             highlight = {
                 enable = true,
                 -- lua is already highlighted by Debian's runtime ftplugin.
