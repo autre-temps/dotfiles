@@ -13,7 +13,8 @@ dotfiles/
 ├── nvim/          Neovim 設定（lazy.nvim ベース・Python 開発向け）→ ~/.config/nvim
 ├── starship/      Starship プロンプト設定（Nord 配色・二段組・Nerd Font アイコン）→ ~/.config/starship.toml
 ├── claude/        Claude Code 設定（settings / skills / output-styles）→ ~/.claude 配下
-└── ccstatusline/  ccstatusline 設定（Claude Code のステータスライン）→ ~/.config/ccstatusline/settings.json
+├── ccstatusline/  ccstatusline 設定（Claude Code のステータスライン）→ ~/.config/ccstatusline/settings.json
+└── bash/          bash 設定（bashrc・starship 初期化の TTY ガード）→ ~/.bashrc
 ```
 
 ## nvim
@@ -84,6 +85,14 @@ mkdir -p ~/.config/ccstatusline
 ln -sfn ~/dotfiles/ccstatusline/settings.json ~/.config/ccstatusline/settings.json
 ```
 
+## bash
+
+bash の設定（`~/.bashrc`）。ファイル単体を `~/.bashrc` へ symlink する。starship の初期化は対話端末（TTY）でのみ働くようガードしてある。`bash -i` をパイプ出力で起こすツール（Claude Code など）に、starship の precmd / preexec が吐くエスケープがコマンド出力へ混入するのを防ぐため。
+
+```bash
+ln -sfn ~/dotfiles/bash/bashrc ~/.bashrc
+```
+
 ## セットアップ
 
 ```bash
@@ -104,4 +113,7 @@ ln -sfn ~/dotfiles/claude/skills/commit/SKILL.md ~/.claude/skills/commit/SKILL.m
 # ccstatusline
 mkdir -p ~/.config/ccstatusline
 ln -sfn ~/dotfiles/ccstatusline/settings.json ~/.config/ccstatusline/settings.json
+
+# bash
+ln -sfn ~/dotfiles/bash/bashrc ~/.bashrc
 ```
