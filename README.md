@@ -10,9 +10,10 @@
 
 ```
 dotfiles/
-├── nvim/      Neovim 設定（lazy.nvim ベース・Python 開発向け）→ ~/.config/nvim
-├── starship/  Starship プロンプト設定（Nord 配色・二段組・Nerd Font アイコン）→ ~/.config/starship.toml
-└── claude/    Claude Code 設定（settings / skills / output-styles）→ ~/.claude 配下
+├── nvim/          Neovim 設定（lazy.nvim ベース・Python 開発向け）→ ~/.config/nvim
+├── starship/      Starship プロンプト設定（Nord 配色・二段組・Nerd Font アイコン）→ ~/.config/starship.toml
+├── claude/        Claude Code 設定（settings / skills / output-styles）→ ~/.claude 配下
+└── ccstatusline/  ccstatusline 設定（Claude Code のステータスライン）→ ~/.config/ccstatusline/settings.json
 ```
 
 ## nvim
@@ -74,6 +75,15 @@ ln -sfn ~/dotfiles/claude/output-styles/vampire-maid.md ~/.claude/output-styles/
 ln -sfn ~/dotfiles/claude/skills/commit/SKILL.md ~/.claude/skills/commit/SKILL.md
 ```
 
+## ccstatusline
+
+[ccstatusline](https://www.npmjs.com/package/ccstatusline) による Claude Code のステータスライン表示の設定。モデル名・コンテキスト使用率・セッション使用量・Git ブランチ・時刻（`HH:MM`）を区切り付きで一行に並べる。ステータスライン本体は `claude/settings.json` の `statusLine` から呼び出される（本体の導入手順は [`claude/README.md`](claude/README.md) を参照）。ファイル単体を `~/.config/ccstatusline/settings.json` へ symlink する。
+
+```bash
+mkdir -p ~/.config/ccstatusline
+ln -sfn ~/dotfiles/ccstatusline/settings.json ~/.config/ccstatusline/settings.json
+```
+
 ## セットアップ
 
 ```bash
@@ -90,4 +100,8 @@ ln -sfn ~/dotfiles/claude/settings.json ~/.claude/settings.json
 mkdir -p ~/.claude/output-styles ~/.claude/skills/commit
 ln -sfn ~/dotfiles/claude/output-styles/vampire-maid.md ~/.claude/output-styles/vampire-maid.md
 ln -sfn ~/dotfiles/claude/skills/commit/SKILL.md ~/.claude/skills/commit/SKILL.md
+
+# ccstatusline
+mkdir -p ~/.config/ccstatusline
+ln -sfn ~/dotfiles/ccstatusline/settings.json ~/.config/ccstatusline/settings.json
 ```
