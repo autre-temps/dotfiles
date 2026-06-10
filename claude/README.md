@@ -35,7 +35,7 @@ Claude Code の共通設定です。主な項目は次のとおりです。
   - `theme`: `dark`
   - `effortLevel`: `xhigh`
   - `spinnerVerbs`: スピナー表示を `給仕中` に置き換え
-  - `statusLine`: [ccstatusline](https://www.npmjs.com/package/ccstatusline) を利用
+  - `statusLine`: [ccstatusline](https://www.npmjs.com/package/ccstatusline) を利用。`bun add -g ccusage ccstatusline` でグローバル導入し、`~/.bun/bin` の実体を直に呼びます（`npx` での都度取得はしません）。
 
 ### `skills/commit/SKILL.md`
 

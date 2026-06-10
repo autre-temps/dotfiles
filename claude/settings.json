@@ -23,6 +23,7 @@
       "Bash(npm run tsc:*)",
       "Bash(npm exec:*)",
       "Bash(npx:*)",
+      "Bash(bun:*)",
       "Bash(uv run test:*)",
       "Bash(npm ls:*)",
       "Bash(curl:*)",
@@ -89,7 +90,7 @@
   "effortLevel": "xhigh",
   "statusLine": {
     "type": "command",
-    "command": "npx -y ccstatusline@latest",
+    "command": "PATH=\"/home/ping/.bun/bin:$PATH\" ccstatusline",
     "padding": 0,
     "refreshInterval": 10
   }
