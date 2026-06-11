@@ -27,7 +27,7 @@ Claude Code の共通設定です。主な項目は次のとおりです。
 - **`permissions`** — `allow` / `deny` でツール実行の許否を制御します。
   - `deny` で `sudo`、`git reset`、`git rebase`、`wget`、`.env*` や秘密鍵（`id_rsa` / `id_ed25519`）の読み書きを禁止しています。
 - **`hooks`** — ツール実行の前後に走るフックです。
-  - `PreToolUse`（Bash）: `rm -rf` などの破壊的コマンドをブロックします。また `git commit` / `git push` は、`--no-verify` を付けない限りブロックされ、コミット前のテスト実行を促します。
+  - `PreToolUse`（Bash）: `rm -rf` などの破壊的コマンドをブロックします。
   - `PostToolUse`（Write/Edit）: `.js` / `.ts` 系は `prettier`、`.py` は `uv run ruff format` で自動整形し、Bash コマンドは `~/.claude/command_history.log` に記録します。
 - **表示・挙動**
   - `outputStyle`: `Vampire Maid`

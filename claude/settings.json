@@ -47,9 +47,6 @@
       "hooks": [{
         "type": "command",
         "command": "jq -r 'if .tool_input.command | test(\"rm -rf|dd if=|:(){ :|:& };:\") then {\"decision\": \"block\", \"reason\": \"危険なコマンドは実行できません。別の方法を検討してください。\"} else empty end'"
-      }, {
-        "type": "command",
-        "command": "jq -r 'if .tool_input.command | test(\"^git (commit|push)\") then if (.tool_input.command | test(\"--no-verify\") | not) then {\"decision\": \"block\", \"reason\": \"コミット前に`uv run pytest`でテストを実行してください。\"} else empty end else empty end'"
       }]
     }],
     "PostToolUse": [{
