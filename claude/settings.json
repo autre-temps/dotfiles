@@ -76,6 +76,12 @@
         "type": "command",
         "command": "powershell.exe -NoProfile -Command \"(New-Object Media.SoundPlayer 'C:\\Windows\\Media\\notify.wav').PlaySync()\" 2>/dev/null || true"
       }]
+    }],
+    "Notification": [{
+      "hooks": [{
+        "type": "command",
+        "command": "powershell.exe -NoProfile -Command \"(New-Object Media.SoundPlayer 'C:\\Windows\\Media\\Windows Message Nudge.wav').PlaySync()\" 2>/dev/null || true"
+      }]
     }]
   },
   "outputStyle": "Vampire Maid",
