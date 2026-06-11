@@ -10,6 +10,7 @@
 
 ```
 dotfiles/
+├── install.sh     必要なコマンド類の導入スクリプト（dotfiles-setup として再利用可）
 ├── nvim/          Neovim 設定（lazy.nvim ベース・Python 開発向け）→ ~/.config/nvim
 ├── starship/      Starship プロンプト設定（Nord 配色・二段組・Nerd Font アイコン）→ ~/.config/starship.toml
 ├── claude/        Claude Code 設定（settings / skills / output-styles）→ ~/.claude 配下
@@ -93,10 +94,37 @@ bash の設定（`~/.bashrc`）。ファイル単体を `~/.bashrc` へ symlink 
 ln -sfn ~/dotfiles/bash/bashrc ~/.bashrc
 ```
 
+## コマンドの導入
+
+設定が前提とするコマンド類は、`install.sh` で一括導入できる。**冪等**で、既に入っているものは skip するため、再実行して差し支えない。
+
+```bash
+bash ~/dotfiles/install.sh            # すべて導入
+bash ~/dotfiles/install.sh --no-apt   # sudo apt を使う段を飛ばす
+```
+
+導入されるもの:
+
+- apt: `git` / `curl` / `unzip` / `build-essential`（treesitter のビルド用）/ `keychain`
+- `nvim`（公式 tarball。Debian 素の apt 版は古く `vim.uv` を満たさないため）
+- `uv`（Python ツールチェーン）・`bun`（JS ツールチェーン）・`starship`（プロンプト）
+- `fzf`（`~/.fzf.bash` を生成。`--no-update-rc` で bashrc は触らない）
+- Claude Code 本体（`bun install -g @anthropic-ai/claude-code`）
+- `basedpyright` / `ruff`（`uv tool install`）・`ccstatusline`（`bun install -g`）
+
+実行すると末尾で、自らを `~/.local/bin/dotfiles-setup` へ symlink する。以降はどこからでも `dotfiles-setup`（または `dotfiles-setup --no-apt`）の一声で再実行できる。
+
+> **Nerd Font** は端末（WSL なら Windows 側）の表示フォント設定であり、`install.sh` の管轄外。別途導入すること。
+
 ## セットアップ
 
 ```bash
 git clone git@github.com:autre-temps/dotfiles.git ~/dotfiles
+
+# コマンド類の導入（詳細は「コマンドの導入」を参照）
+bash ~/dotfiles/install.sh
+
+# --- 以下 symlink の展開 ---
 
 # nvim
 ln -s ~/dotfiles/nvim ~/.config/nvim
