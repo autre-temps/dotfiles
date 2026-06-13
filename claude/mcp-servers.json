@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "drawio": {
+      "command": "npx",
+      "args": ["-y", "@drawio/mcp@latest"]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_GITHUB_PAT_HERE"
+      }
+    }
+  }
+}

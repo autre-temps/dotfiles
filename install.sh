@@ -161,6 +161,31 @@ link "$DOTFILES_DIR/claude/settings.json"                "$HOME/.claude/settings
 link "$DOTFILES_DIR/claude/output-styles/vampire-maid.md" "$HOME/.claude/output-styles/vampire-maid.md"
 link "$DOTFILES_DIR/claude/skills/commit/SKILL.md"       "$HOME/.claude/skills/commit/SKILL.md"
 
+# --- 11. MCP サーバー設定を ~/.claude.json へ適用 ------------------------
+# mcp-servers.json の mcpServers を ~/.claude.json にマージする（冪等）。
+# ~/.claude.json が未存在の場合は mcp-servers.json の内容をそのまま書き出す。
+MCP_SRC="$DOTFILES_DIR/claude/mcp-servers.json"
+CLAUDE_JSON="$HOME/.claude.json"
+if [ -f "$MCP_SRC" ]; then
+    log "MCP サーバー設定を $CLAUDE_JSON へ適用"
+    python3 - "$MCP_SRC" "$CLAUDE_JSON" << 'PYEOF'
+import json, sys, os
+mcp_path, cfg_path = sys.argv[1], sys.argv[2]
+with open(mcp_path) as f:
+    mcp = json.load(f)
+if os.path.exists(cfg_path):
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+else:
+    cfg = {}
+cfg.setdefault("mcpServers", {}).update(mcp["mcpServers"])
+with open(cfg_path, "w") as f:
+    json.dump(cfg, f, indent=2, ensure_ascii=False)
+PYEOF
+else
+    skip "claude/mcp-servers.json が見当たらないため MCP 設定をスキップ"
+fi
+
 # --- 任意: win32yank (WSL の nvim クリップボード補強) --------------------
 # clipboard=unnamedplus は WSL では clip.exe/powershell.exe で概ね足りるが、
 # OS→nvim の貼り付けを確実にするなら win32yank があると堅い。任意導入。
