@@ -1,4 +1,4 @@
--- Python LSP using Neovim's native vim.lsp (works on 0.10.x; no nvim-lspconfig).
+-- Python LSP using Neovim's native vim.lsp (0.11+; no nvim-lspconfig).
 -- Servers are installed globally with: uv tool install basedpyright ruff
 
 -- Make sure uv's tool binaries are discoverable even when nvim is not launched
@@ -40,8 +40,8 @@ local function on_attach(_, bufnr)
     map("K", vim.lsp.buf.hover, "hover")
     map("<leader>rn", vim.lsp.buf.rename, "rename")
     map("<leader>ca", vim.lsp.buf.code_action, "code action")
-    map("[d", vim.diagnostic.goto_prev, "prev diagnostic")
-    map("]d", vim.diagnostic.goto_next, "next diagnostic")
+    map("[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, "prev diagnostic")
+    map("]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, "next diagnostic")
 end
 
 local function capabilities()

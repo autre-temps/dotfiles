@@ -1,59 +1,61 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# ── 配色（Nord パレットで全体を統一） ──────────────────────────
-palette = "nord"
+# ── 配色（Dracula パレットで全体を統一） ──────────────────────
+palette = "dracula"
 add_newline = true
 
 # ── プロンプト全体の構成（二段組・アイコン主体） ────────────────
 # 上段に各種情報を一望し、下段の ❯ から入力する。背景色は使わず、
 # 文字色とアイコンだけで彩る。グリフは Nerd Font の番地を直に指定。
 format = """
-[╭─](bold frost_cyan)$username$hostname$directory$git_branch$git_status$git_state\
+[╭─](bold cyan)$username$hostname$directory$git_branch$git_status$git_state\
 $nodejs$python$rust$golang$java$ruby$php$docker_context\
 $cmd_duration
-[╰─](bold frost_cyan)$character"""
+[╰─](bold cyan)$character"""
 
-[palettes.nord]
-frost_teal    = "#8fbcbb"
-frost_cyan    = "#88c0d0"
-frost_blue    = "#81a1c1"
-frost_deep    = "#5e81ac"
-aurora_red    = "#bf616a"
-aurora_orange = "#d08770"
-aurora_yellow = "#ebcb8b"
-aurora_green  = "#a3be8c"
-aurora_purple = "#b48ead"
-snow          = "#d8dee9"
+# Dracula 公式パレット（https://draculatheme.com/contribute）
+[palettes.dracula]
+background   = "#282a36"
+current_line = "#44475a"
+foreground   = "#f8f8f2"
+comment      = "#6272a4"
+cyan         = "#8be9fd"
+green        = "#50fa7b"
+orange       = "#ffb86c"
+pink         = "#ff79c6"
+purple       = "#bd93f9"
+red          = "#ff5555"
+yellow       = "#f1fa8c"
 
 # ── ユーザ・ホスト（root / SSH のときだけ表示） ──────────────────
 [username]
 show_always = false
-style_user = "bold aurora_yellow"
-style_root = "bold aurora_red"
-format = "[ $user]($style)[@](bold snow)"
+style_user = "bold yellow"
+style_root = "bold red"
+format = "[ $user]($style)[@](bold foreground)"
 
 [hostname]
 ssh_only = true
-format = "[ $hostname](bold aurora_green) "
+format = "[ $hostname](bold green) "
 disabled = false
 
 # ── カレントディレクトリ ───────────────────────────────────────
 [directory]
 truncation_length = 4
 truncate_to_repo = true
-style = "bold frost_cyan"
+style = "bold cyan"
 read_only = " 󰌾"
-read_only_style = "aurora_red"
-format = "[ $path]($style)[$read_only]($read_only_style) "
+read_only_style = "red"
+format = "[ $path]($style)[$read_only]($read_only_style) "
 
 # ── Git ───────────────────────────────────────────────────────
 [git_branch]
-symbol = ""
-style = "bold aurora_purple"
+symbol = ""
+style = "bold purple"
 format = "on [$symbol $branch]($style) "
 
 [git_status]
-style = "bold aurora_red"
+style = "bold red"
 format = '([$all_status$ahead_behind]($style) )'
 conflicted = "✖${count} "
 ahead = "⇡${count} "
@@ -67,58 +69,58 @@ renamed = "»${count} "
 deleted = "✘${count} "
 
 [git_state]
-style = "bold aurora_orange"
+style = "bold orange"
 format = '[$state( $progress_current/$progress_total)]($style) '
 
 # ── コマンド実行時間（500ms 以上かかったら表示） ─────────────────
 [cmd_duration]
 min_time = 500
-style = "bold aurora_yellow"
-format = "took [ $duration]($style) "
+style = "bold yellow"
+format = "took [ $duration]($style) "
 
 # ── プロンプト記号（成功は緑 ❯ / 失敗は赤 ❯） ───────────────────
 [character]
-success_symbol = "[❯](bold aurora_green)"
-error_symbol = "[❯](bold aurora_red)"
-vimcmd_symbol = "[❮](bold aurora_green)"
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold green)"
 
 # ── 言語ランタイム（該当の環境があるときだけ自動表示） ──────────
 [nodejs]
-symbol = ""
+symbol = ""
 format = "via [$symbol $version]($style) "
-style = "bold aurora_green"
+style = "bold green"
 
 [python]
-symbol = ""
+symbol = ""
 format = 'via [$symbol $version(\($virtualenv\))]($style) '
-style = "bold aurora_yellow"
+style = "bold yellow"
 
 [rust]
 symbol = "󱘗"
 format = "via [$symbol $version]($style) "
-style = "bold aurora_orange"
+style = "bold orange"
 
 [golang]
-symbol = ""
+symbol = ""
 format = "via [$symbol $version]($style) "
-style = "bold frost_cyan"
+style = "bold cyan"
 
 [java]
-symbol = ""
+symbol = ""
 format = "via [$symbol $version]($style) "
-style = "bold aurora_red"
+style = "bold red"
 
 [ruby]
-symbol = ""
+symbol = ""
 format = "via [$symbol $version]($style) "
-style = "bold aurora_red"
+style = "bold red"
 
 [php]
-symbol = ""
+symbol = ""
 format = "via [$symbol $version]($style) "
-style = "bold frost_blue"
+style = "bold comment"
 
 [docker_context]
-symbol = ""
+symbol = ""
 format = "via [$symbol $context]($style) "
-style = "bold frost_blue"
+style = "bold comment"

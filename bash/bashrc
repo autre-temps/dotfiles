@@ -112,8 +112,12 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# keychain for ssh-agent
-eval "$(keychain --eval --agents ssh id_ed25519)"
+# keychain for ssh-agent — only in a real interactive terminal. In a non-TTY
+# `bash -i` (e.g. Claude Code), keychain can block on a passphrase prompt or
+# leak its messages into command output. Guard on a TTY like starship below.
+if [[ $- == *i* ]] && [ -t 1 ]; then
+    eval "$(keychain --eval --agents ssh id_ed25519)"
+fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 export PATH="$HOME/.local/bin:$PATH"
@@ -129,3 +133,4 @@ fi
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"

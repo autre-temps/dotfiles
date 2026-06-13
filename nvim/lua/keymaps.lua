@@ -4,8 +4,8 @@ local term_opts = { silent = true }
 local keymap = vim.api.nvim_set_keymap
 
 keymap("", "<Space>", "<Nop>", opts)
-vim.g.maploader = " "
-vim.g.maplocalleader = " "
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
 keymap("i", "<C-j>", "<ESC>", opts)
 keymap("", "<C-j>", "<ESC>", opts)

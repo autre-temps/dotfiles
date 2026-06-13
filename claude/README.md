@@ -47,23 +47,16 @@ Claude Code の共通設定です。主な項目は次のとおりです。
 
 ## 適用方法（symlink）
 
-各ファイルを、対応する `~/.claude` 配下へ symlink で結びます。リポジトリ側を編集すれば、そのまま `~/.claude` に反映されます。
+各ファイルを、対応する `~/.claude` 配下へ symlink で結びます。リポジトリ側を編集すれば、そのまま `~/.claude` に反映されます。この展開はリポジトリ直下の [`install.sh`](../install.sh) が一括して行うため、手作業は不要です。
 
-```bash
-# 設定本体
-ln -sfn ~/dotfiles/claude/settings.json ~/.claude/settings.json
+`install.sh` が結ぶのは次の三つ（`~/.claude` を館ごと結ばず、必要なファイルだけを個別に結ぶ方針です）。
 
-# 出力スタイル
-mkdir -p ~/.claude/output-styles
-ln -sfn ~/dotfiles/claude/output-styles/vampire-maid.md ~/.claude/output-styles/vampire-maid.md
-
-# スキル
-mkdir -p ~/.claude/skills/commit
-ln -sfn ~/dotfiles/claude/skills/commit/SKILL.md ~/.claude/skills/commit/SKILL.md
-```
+- `claude/settings.json` → `~/.claude/settings.json`
+- `claude/output-styles/vampire-maid.md` → `~/.claude/output-styles/vampire-maid.md`
+- `claude/skills/commit/SKILL.md` → `~/.claude/skills/commit/SKILL.md`
 
 > [!NOTE]
-> `~/.claude` 側に実体ファイルが既にある場合、`ln -sfn` がそれを symlink で置き換えます。必要に応じて先にバックアップを取ってください。
+> `~/.claude` 側に実体ファイルが既にある場合、`install.sh` は上書きせず `.bak.<epoch>` へ退避してから symlink を結びます。退避先は元の場所に残るので、必要なら後から戻せます。
 
 ## 含めていないもの
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# install.sh — dotfiles が前提とするコマンド類を導入する。
+# install.sh — dotfiles が前提とするコマンド類を導入し、symlink を展開する。
 #
 # 対象環境: WSL2 (Debian) を主とする Linux。
-# symlink の展開そのものは行わない（README.md の「セットアップ」を参照）。
-# 冪等: 既に入っているものは skip する。再実行して差し支えない。
+# コマンド導入に続けて、各設定を対応する展開先へ symlink で結ぶ（末尾の段）。
+# 冪等: 既に入っているもの・結び済みのものは skip する。再実行して差し支えない。
 #
 #   bash install.sh            # すべて導入
 #   bash install.sh --no-apt   # sudo apt を使う処理を飛ばす
@@ -15,6 +15,31 @@ log()  { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 skip() { printf '    \033[2m(skip) %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;33m[warn]\033[0m %s\n' "$*" >&2; }
 has()  { command -v "$1" >/dev/null 2>&1; }
+
+# link SRC DST — DST を SRC への symlink にする。冪等。
+#   - 既に同じ宛先の symlink ならそのまま skip
+#   - 別宛先の symlink は ln -sfn で貼り替え
+#   - 実体ファイル/ディレクトリがあれば .bak.<epoch> へ退避してから結ぶ
+link() {
+    local src dst bak
+    src="$(realpath "$1")"
+    dst="$2"
+    mkdir -p "$(dirname "$dst")"
+    if [ -L "$dst" ] && [ "$(readlink -f "$dst")" = "$src" ]; then
+        skip "link: $dst"
+        return
+    fi
+    if [ -e "$dst" ] && [ ! -L "$dst" ]; then
+        bak="$dst.bak.$(date +%s)"
+        warn "既存の実体 $dst を $bak へ退避"
+        mv "$dst" "$bak"
+    fi
+    log "link: $dst -> $src"
+    ln -sfn "$src" "$dst"
+}
+
+# このスクリプト（= dotfiles リポジトリ）の在処。symlink 展開の起点。
+DOTFILES_DIR="$(cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")" && pwd)"
 
 NO_APT=0
 [ "${1:-}" = "--no-apt" ] && NO_APT=1
@@ -124,6 +149,18 @@ else
     bun install -g ccstatusline
 fi
 
+# --- 10. symlink 展開 ----------------------------------------------------
+# 各設定を、対応する展開先へ symlink で結ぶ。実体があれば退避してから結ぶ。
+# 認証情報や履歴が同居する ~/.claude は館ごとは結ばず、必要なファイルだけ個別に。
+log "symlink を展開"
+link "$DOTFILES_DIR/bash/bashrc"                          "$HOME/.bashrc"
+link "$DOTFILES_DIR/starship/starship.toml"              "$HOME/.config/starship.toml"
+link "$DOTFILES_DIR/nvim"                                "$HOME/.config/nvim"
+link "$DOTFILES_DIR/ccstatusline/settings.json"          "$HOME/.config/ccstatusline/settings.json"
+link "$DOTFILES_DIR/claude/settings.json"                "$HOME/.claude/settings.json"
+link "$DOTFILES_DIR/claude/output-styles/vampire-maid.md" "$HOME/.claude/output-styles/vampire-maid.md"
+link "$DOTFILES_DIR/claude/skills/commit/SKILL.md"       "$HOME/.claude/skills/commit/SKILL.md"
+
 # --- 任意: win32yank (WSL の nvim クリップボード補強) --------------------
 # clipboard=unnamedplus は WSL では clip.exe/powershell.exe で概ね足りるが、
 # OS→nvim の貼り付けを確実にするなら win32yank があると堅い。任意導入。
@@ -143,5 +180,5 @@ else
     ln -sfn "$SCRIPT" "$LINK"
 fi
 
-log "完了。以降は dotfiles-setup の一声で再実行できます。"
-log "次は README.md の「セットアップ」の symlink 展開を行ってくださいませ。"
+log "完了。コマンド導入と symlink 展開を済ませました。"
+log "以降は dotfiles-setup の一声で再実行できます。"
