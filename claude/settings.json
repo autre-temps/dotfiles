@@ -1,11 +1,59 @@
 {
   "permissions": {
+    "defaultMode": "default",
+    "disableBypassPermissionsMode": "disable",
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
+      "Bash(mkfs:*)",
+      "Bash(dd:*)",
+      "Bash(nc:*)",
+      "Bash(telnet:*)",
+      "Bash(eval:*)",
+      "Bash(bash -c:*)",
+      "Bash(sh -c:*)",
+      "Bash(zsh -c:*)",
+      "Bash(python -c:*)",
+      "Bash(python3 -c:*)",
+      "Bash(node -e:*)",
+      "Bash(rm -rf:*)",
+      "Bash(rm -fr:*)",
+      "Bash(git reset:*)",
+      "Bash(git rebase:*)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(**/.env*)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)",
+      "Read(**/*.pem)",
+      "Edit(~/.ssh/**)",
+      "Edit(~/.aws/**)",
+      "Edit(**/.env*)",
+      "Write(~/.ssh/**)",
+      "Write(~/.aws/**)",
+      "Write(**/.env*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(mv:*)",
+      "Bash(npm publish:*)",
+      "Bash(docker:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(pkill:*)"
+    ],
     "allow": [
+      "Bash(npm run:*)",
+      "Bash(git status)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(ls:*)",
       "Bash(mkdir:*)",
       "Bash(touch:*)",
-      "Bash(ls:*)",
       "Bash(tree:*)",
-      "Bash(mv:*)",
       "Bash(cp:*)",
       "Bash(cat:*)",
       "Bash(grep:*)",
@@ -18,28 +66,37 @@
       "Bash(done)",
       "Bash(for:*)",
       "Bash(npm install:*)",
-      "Bash(npm run dev:*)",
-      "Bash(npm run build:*)",
-      "Bash(npm run tsc:*)",
       "Bash(npm exec:*)",
       "Bash(npx:*)",
       "Bash(bun:*)",
       "Bash(uv run test:*)",
       "Bash(npm ls:*)",
-      "Bash(curl:*)",
-      "Bash(pkill:*)",
-      "Bash(true)"
-    ],
-    "deny": [
-      "Bash(sudo:*)",
-      "Bash(git reset:*)",
-      "Bash(git rebase:*)",
-      "Read(.env*)",
-      "Read(id_rsa)",
-      "Read(id_ed25519)",
-      "Write(.env*)",
-      "Bash(wget:*)"
+      "Bash(true)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:code.claude.com)"
     ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": false,
+    "failIfUnavailable": true,
+    "filesystem": {
+      "denyRead": ["~/"],
+      "allowRead": ["."],
+      "allowWrite": []
+    },
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "api.github.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "docs.anthropic.com",
+        "code.claude.com"
+      ]
+    }
   },
   "hooks": {
     "PreToolUse": [
@@ -48,7 +105,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r 'if .tool_input.command | test(\"rm -rf|dd if=|:(){ :|:& };:\") then {\"decision\": \"block\", \"reason\": \"危険なコマンドは実行できません。別の方法を検討してください。\"} else empty end'"
+            "command": "c=\"$(jq -r '.tool_input.command // empty')\"; if printf '%s' \"$c\" | grep -qE 'rm[[:space:]].*(-[a-zA-Z]*[rR]|--recursive)|dd[[:space:]]+if=|mkfs|:\\(\\)[[:space:]]*\\{'; then printf '%s' '{\"decision\":\"block\",\"reason\":\"危険な破壊的コマンドを検知したため実行を中止いたしました。別の手立てをご検討くださいませ。\"}'; elif printf '%s' \"$c\" | grep -qE '\\.env|\\.ssh/|\\.aws/|id_rsa|id_ed25519|\\.pem|credentials'; then printf '%s' '{\"decision\":\"block\",\"reason\":\"秘密情報への接触を検知したため実行を中止いたしました。\"}'; fi"
           }
         ]
       }
