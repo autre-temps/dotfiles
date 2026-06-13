@@ -13,3 +13,4 @@ vim.o.swapfile = false
 vim.o.undofile = true
 vim.o.cursorline = true
 vim.o.termguicolors = true
+vim.o.laststatus = 3
