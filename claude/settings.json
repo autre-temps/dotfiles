@@ -73,7 +73,40 @@
       "Edit(**/.env*)",
       "Write(~/.ssh/**)",
       "Write(~/.aws/**)",
-      "Write(**/.env*)"
+      "Write(**/.env*)",
+      "Read(~/.config/gcloud/**)",
+      "Read(~/.azure/**)",
+      "Read(~/.kube/config)",
+      "Read(~/.vault-token)",
+      "Read(**/*.tfstate)",
+      "Read(~/.docker/config.json)",
+      "Read(~/.npmrc)",
+      "Read(~/.pypirc)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.netrc)",
+      "Edit(~/.config/gcloud/**)",
+      "Edit(~/.azure/**)",
+      "Edit(~/.kube/config)",
+      "Edit(~/.vault-token)",
+      "Edit(**/*.tfstate)",
+      "Edit(~/.docker/config.json)",
+      "Edit(~/.npmrc)",
+      "Edit(~/.pypirc)",
+      "Edit(~/.config/gh/**)",
+      "Edit(~/.gnupg/**)",
+      "Edit(~/.netrc)",
+      "Write(~/.config/gcloud/**)",
+      "Write(~/.azure/**)",
+      "Write(~/.kube/config)",
+      "Write(~/.vault-token)",
+      "Write(**/*.tfstate)",
+      "Write(~/.docker/config.json)",
+      "Write(~/.npmrc)",
+      "Write(~/.pypirc)",
+      "Write(~/.config/gh/**)",
+      "Write(~/.gnupg/**)",
+      "Write(~/.netrc)"
     ],
     "ask": [
       "Bash(git push:*)",
@@ -98,7 +131,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "c=\"$(jq -r '.tool_input.command // empty')\"; if printf '%s' \"$c\" | grep -qE 'rm[[:space:]].*(-[a-zA-Z]*[rR]|--recursive)|dd[[:space:]]+if=|mkfs|:\\(\\)[[:space:]]*\\{'; then printf '%s' '{\"decision\":\"block\",\"reason\":\"危険な破壊的コマンドを検知したため実行を中止いたしました。別の手立てをご検討くださいませ。\"}'; elif printf '%s' \"$c\" | grep -qE '\\.env|\\.ssh/|\\.aws/|id_rsa|id_ed25519|\\.pem|credentials'; then printf '%s' '{\"decision\":\"block\",\"reason\":\"秘密情報への接触を検知したため実行を中止いたしました。\"}'; fi"
+            "command": "c=\"$(jq -r '.tool_input.command // empty')\"; if printf '%s' \"$c\" | grep -qE 'rm[[:space:]].*(-[a-zA-Z]*[rR]|--recursive)|dd[[:space:]]+if=|mkfs|:\\(\\)[[:space:]]*\\{'; then printf '%s' '{\"decision\":\"block\",\"reason\":\"危険な破壊的コマンドを検知したため実行を中止いたしました。別の手立てをご検討くださいませ。\"}'; elif printf '%s' \"$c\" | grep -qE '\\.env|\\.ssh/|\\.aws/|id_rsa|id_ed25519|\\.pem|credentials|\\.config/gcloud|\\.azure|\\.kube/config|\\.vault-token|\\.tfstate|\\.docker/config|\\.npmrc|\\.pypirc|\\.config/gh|\\.gnupg|\\.netrc'; then printf '%s' '{\"decision\":\"block\",\"reason\":\"秘密情報への接触を検知したため実行を中止いたしました。\"}'; fi"
           }
         ]
       }
