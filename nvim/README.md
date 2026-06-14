@@ -89,3 +89,89 @@ spec は [`lua/plugins/lualine.lua`](lua/plugins/lualine.lua)。配色（`option
 ### 導入
 
 `lua/plugins/` に spec を置けば、次回 nvim 起動時に lazy.nvim が自動でインストールする。確実に取り込む・バージョンを固定するには `:Lazy sync`。
+
+## fzf-lua（ファジーファインダー）
+
+[ibhagwan/fzf-lua](https://github.com/ibhagwan/fzf-lua) による全文検索・ファイル/バッファ絞り込み・LSP ナビゲーション。
+spec は [`lua/plugins/fzf-lua.lua`](lua/plugins/fzf-lua.lua)。
+
+`~/.fzf` の fzf バイナリを直接利用する。プレビューは fzf-lua 内蔵のレンダラーを使うため bat は不要。グレップには **ripgrep** (`rg`) が入っていると速度と精度が格段に上がる（未導入の場合は `grep` で動作するが低速）。
+
+```sh
+# ripgrep の導入（強く推奨）
+sudo apt install ripgrep
+```
+
+### キーマップ
+
+すべてノーマルモード。`<Space>fg` のみビジュアルモードでも使用可。
+
+#### ファイル・バッファ
+
+| キー | 説明 |
+| --- | --- |
+| `<Space>ff` | カレントディレクトリ以下のファイルを検索 |
+| `<Space>fr` | 最近開いたファイル（oldfiles）を検索 |
+| `<Space>fb` | 開いているバッファを検索 |
+
+#### グレップ
+
+| キー | 説明 |
+| --- | --- |
+| `<Space>fg` | ライブグレップ（入力に連動して検索。ビジュアル選択中に押すと選択テキストで検索） |
+| `<Space>fw` | カーソル下の単語でグレップ |
+| `<Space>fc` | 現在のバッファ内の行を絞り込み |
+
+#### LSP
+
+> LSP 未接続バッファでは何も表示されない。Python ファイルを開いた状態で使うこと。
+
+| キー | 説明 |
+| --- | --- |
+| `<Space>ls` | バッファ内のシンボル一覧（関数・クラス等） |
+| `<Space>lS` | ワークスペース全体のシンボル一覧 |
+| `<Space>ld` | バッファの diagnostics 一覧 |
+| `<Space>lD` | ワークスペース全体の diagnostics 一覧 |
+
+> 既存の `gd`（定義ジャンプ）・`gr`（参照）・`gi`（実装）は `lsp.lua` の `on_attach` が保持する。
+
+#### Git
+
+| キー | 説明 |
+| --- | --- |
+| `<Space>gc` | git コミット履歴を表示（Enter でそのコミットの差分をプレビュー） |
+| `<Space>gs` | git status（Enter で diff をプレビュー） |
+
+#### その他
+
+| キー | 説明 |
+| --- | --- |
+| `<Space>fh` | ヘルプタグを検索 |
+| `<Space>fk` | 定義済みキーマップを一覧・検索 |
+| `<Space>f:` | コマンド履歴を検索 |
+
+### ウィンドウ内のキー操作
+
+fzf-lua のウィンドウが開いているとき、以下のキーが使える。
+
+| キー | 説明 |
+| --- | --- |
+| `Enter` | 選択して開く |
+| `Ctrl-v` | 垂直分割で開く |
+| `Ctrl-s` | 水平分割で開く |
+| `Ctrl-t` | タブで開く |
+| `Ctrl-c` / `Esc` | 閉じる |
+| `Ctrl-f` / `Ctrl-b` | プレビューを上下スクロール |
+
+### `:FzfLua` コマンド
+
+すべての機能は `:FzfLua <picker>` でも呼び出せる。
+
+```text
+:FzfLua files
+:FzfLua live_grep
+:FzfLua buffers
+:FzfLua git_commits
+```
+
+ピッカー名一覧は `:FzfLua` のみで補完される。

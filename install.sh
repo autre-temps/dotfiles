@@ -54,7 +54,8 @@ export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 # bubblewrap / socat: Claude Code の sandbox（settings.json で enabled かつ failIfUnavailable）が
 #   Linux で使う。bwrap がコマンドを隔離し、socat がネットワーク濾過（許可ドメインへの
 #   プロキシ仲介）を担う。いずれか欠けると sandbox 化できず Bash が止まる。
-APT_PKGS=(git curl unzip build-essential keychain ca-certificates bubblewrap socat)
+# ripgrep: fzf-lua の live grep が内部で使う高速全文検索ツール。
+APT_PKGS=(git curl unzip build-essential keychain ca-certificates bubblewrap socat ripgrep)
 if [ "$NO_APT" -eq 0 ]; then
     missing=()
     for p in "${APT_PKGS[@]}"; do
