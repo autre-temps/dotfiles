@@ -77,7 +77,6 @@
     "defaultMode": "default",
     "disableBypassPermissionsMode": "disable"
   },
-  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {

@@ -13,7 +13,8 @@
       },
       {
         "id": "3",
-        "type": "context-percentage-usable"
+        "type": "context-percentage-usable",
+        "color": "brightBlack"
       },
       {
         "id": "4",
@@ -21,30 +22,27 @@
       },
       {
         "id": "5",
-        "type": "session-usage"
-      },
+        "type": "git-branch",
+        "color": "magenta"
+      }
+    ],
+    [
       {
         "id": "6",
-        "type": "separator"
+        "type": "reset-timer",
+        "color": "brightBlue"
       },
       {
         "id": "7",
-        "type": "git-branch",
-        "color": "magenta"
-      },
-      {
-        "id": "8",
         "type": "separator"
       },
       {
-        "id": "9",
+        "id": "8",
         "type": "custom-command",
-        "commandPath": "date +%H:%M",
-        "color": "brightBlack",
-        "timeout": 1000
+        "commandPath": "date '+%H:%M'",
+        "color": "green"
       }
     ],
-    [],
     []
   ],
   "flexMode": "full-minus-40",
@@ -57,7 +55,7 @@
   "powerline": {
     "enabled": false,
     "separators": [
-      ""
+      ""
     ],
     "separatorInvertBackground": [
       false
@@ -66,9 +64,5 @@
     "endCaps": [],
     "autoAlign": false,
     "continueThemeAcrossLines": false
-  },
-  "installation": {
-    "method": "auto-update",
-    "packageManager": "npm"
   }
 }
