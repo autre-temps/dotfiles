@@ -22,22 +22,31 @@
       },
       {
         "id": "5",
+        "type": "session-usage",
+        "color": "brightBlue"
+      },
+      {
+        "id": "6",
+        "type": "separator"
+      },
+      {
+        "id": "7",
         "type": "git-branch",
         "color": "magenta"
       }
     ],
     [
       {
-        "id": "6",
+        "id": "8",
         "type": "reset-timer",
         "color": "brightBlue"
       },
       {
-        "id": "7",
+        "id": "9",
         "type": "separator"
       },
       {
-        "id": "8",
+        "id": "10",
         "type": "custom-command",
         "commandPath": "date '+%H:%M'",
         "color": "green"
