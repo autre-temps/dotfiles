@@ -15,7 +15,9 @@ dotfiles/
 ├── starship/      Starship プロンプト設定（Dracula 配色・二段組・Nerd Font アイコン）→ ~/.config/starship.toml
 ├── claude/        Claude Code 設定（settings / skills / output-styles）→ ~/.claude 配下
 ├── ccstatusline/  ccstatusline 設定（Claude Code のステータスライン）→ ~/.config/ccstatusline/settings.json
-└── bash/          bash 設定（bashrc・starship 初期化の TTY ガード）→ ~/.bashrc
+├── bash/          bash 設定（bashrc・starship 初期化の TTY ガード）→ ~/.bashrc
+├── git/           Git 設定（gitconfig）→ ~/.gitconfig
+└── gh/            GitHub CLI 設定（config.yml）→ ~/.config/gh/config.yml
 ```
 
 ## nvim
@@ -32,16 +34,20 @@ nvim/
     ├── config/
     │   ├── lazy.lua          lazy.nvim ブートストラップ
     │   └── lsp.lua           LSP 設定
-    └── plugins/              プラグインごとの spec
-        ├── commentary.lua    コメントアウト
-        ├── completion.lua    補完
-        ├── conform.lua       フォーマッタ
-        ├── lualine.lua       ステータスライン
-        ├── noice.lua         コマンドライン（Ex）の中央ポップアップ表示
-        ├── oil.lua           バッファとして編集するファイラ
-        ├── toggleterm.lua    端末トグル（浮き窓）
-        ├── treesitter.lua    シンタックスハイライト
-        └── winresizer.lua    ウィンドウリサイズ
+    └── plugins/                   プラグインごとの spec
+        ├── claudecode.lua         Claude Code nvim 連携
+        ├── commentary.lua         コメントアウト
+        ├── completion.lua         補完
+        ├── conform.lua            フォーマッタ
+        ├── dracula.lua            カラースキーム（Dracula）
+        ├── fzf-lua.lua            ファジーファインダー
+        ├── lualine.lua            ステータスライン
+        ├── noice.lua              コマンドライン（Ex）の中央ポップアップ表示
+        ├── oil.lua                バッファとして編集するファイラ
+        ├── render-markdown.lua    Markdown のインライン描画
+        ├── toggleterm.lua         端末トグル（浮き窓）
+        ├── tree-sitter-manager.lua  シンタックスハイライト（treesitter）
+        └── winresizer.lua         ウィンドウリサイズ
 ```
 
 各プラグインの使い方（コメントアウトの [vim-commentary](https://github.com/tpope/vim-commentary) など）は [`nvim/README.md`](nvim/README.md) にまとめてある。
@@ -73,6 +79,14 @@ nvim/
 
 bash の設定（`~/.bashrc`）。ファイル単体を `~/.bashrc` へ symlink する（`install.sh` が行う）。starship の初期化と keychain（ssh-agent）の起動は、いずれも対話端末（TTY）でのみ働くようガードしてある。`bash -i` をパイプ出力で起こすツール（Claude Code など）に、starship の precmd / preexec が吐くエスケープが混入したり、keychain がパスフレーズ入力で止まったりするのを防ぐため。
 
+## git
+
+Git の設定（`~/.gitconfig`）。ファイル単体を `~/.gitconfig` へ symlink する（`install.sh` が行う）。
+
+## gh
+
+[GitHub CLI](https://cli.github.com/) の設定（`config.yml`）。ファイル単体を `~/.config/gh/config.yml` へ symlink する（`install.sh` が行う）。`gh` 本体の導入も `install.sh` が公式 apt リポジトリ経由で行う。
+
 ## コマンドの導入
 
 設定が前提とするコマンド類の導入と、各設定の symlink 展開を、`install.sh` で一括して行える。**冪等**で、既に入っているもの・結び済みのものは skip するため、再実行して差し支えない。
@@ -84,14 +98,18 @@ bash ~/dotfiles/install.sh --no-apt   # sudo apt を使う段を飛ばす
 
 導入されるもの:
 
-- apt: `git` / `curl` / `unzip` / `build-essential`（treesitter のビルド用）/ `keychain`
+- apt: `git` / `curl` / `unzip` / `build-essential`（treesitter のビルド用）/ `keychain` / `ca-certificates` / `bubblewrap` / `socat`（Claude Code sandbox 用）/ `ripgrep`（fzf-lua の live grep 用）/ `shfmt`（シェルスクリプトフォーマッタ）
 - `nvim`（公式 tarball。Debian 素の apt 版は古く `vim.uv` を満たさないため）
 - `uv`（Python ツールチェーン）・`bun`（JS ツールチェーン）・`starship`（プロンプト）
 - `fzf`（`~/.fzf.bash` を生成。`--no-update-rc` で bashrc は触らない）
 - Claude Code 本体（`bun install -g @anthropic-ai/claude-code`）
 - `basedpyright` / `ruff`（`uv tool install`）・`ccstatusline`（`bun install -g`）
+- `stylua`（Lua フォーマッタ。GitHub Releases から `~/.local/bin` へ導入）
+- `gh`（GitHub CLI。公式 apt リポジトリ経由。`--no-apt` 時は skip）
 
-導入に続けて、末尾で **symlink を展開**する。`bash/bashrc`→`~/.bashrc`、`starship/starship.toml`→`~/.config/starship.toml`、`nvim`→`~/.config/nvim`、`ccstatusline/settings.json`→`~/.config/ccstatusline/settings.json`、`claude/` の設定・出力スタイル・スキルを `~/.claude` 配下へ、それぞれ結ぶ。展開先に実体ファイルがある場合は `.bak.<epoch>` へ退避してから結ぶため、上書きで失われることはない。`~/.claude` は認証情報や履歴が同居するため館ごとは結ばず、必要なファイルだけを個別に結ぶ。
+導入に続けて、**symlink を展開**する。`bash/bashrc`→`~/.bashrc`、`starship/starship.toml`→`~/.config/starship.toml`、`nvim`→`~/.config/nvim`、`ccstatusline/settings.json`→`~/.config/ccstatusline/settings.json`、`git/gitconfig`→`~/.gitconfig`、`gh/config.yml`→`~/.config/gh/config.yml`、`claude/` の設定・出力スタイル・スキルを `~/.claude` 配下へ、それぞれ結ぶ。展開先に実体ファイルがある場合は `.bak.<epoch>` へ退避してから結ぶため、上書きで失われることはない。`~/.claude` は認証情報や履歴が同居するため館ごとは結ばず、必要なファイルだけを個別に結ぶ。
+
+さらに `claude/mcp-servers.json` の `mcpServers` を `~/.claude.json` へマージする（冪等）。
 
 さらに末尾で、自らを `~/.local/bin/dotfiles-setup` へ symlink する。以降はどこからでも `dotfiles-setup`（または `dotfiles-setup --no-apt`）の一声で再実行できる。
 
