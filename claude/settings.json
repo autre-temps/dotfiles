@@ -28,9 +28,20 @@
       "Bash(uv run test:*)",
       "Bash(npm ls:*)",
       "Bash(true)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(rg:*)",
+      "Bash(diff:*)",
+      "Bash(which:*)",
+      "Bash(type:*)",
+      "Bash(uv:*)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:docs.anthropic.com)",
-      "WebFetch(domain:code.claude.com)"
+      "WebFetch(domain:code.claude.com)",
+      "WebFetch(domain:docs.python.org)"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -72,7 +83,10 @@
       "Bash(docker:*)",
       "Bash(curl:*)",
       "Bash(wget:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(git rm:*)",
+      "Bash(git stash:*)",
+      "Bash(git restore:*)"
     ],
     "defaultMode": "default",
     "disableBypassPermissionsMode": "disable"
@@ -124,6 +138,10 @@
           {
             "type": "command",
             "command": "powershell.exe -NoProfile -Command \"(New-Object Media.SoundPlayer 'C:\\Windows\\Media\\notify.wav').PlaySync()\" 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "log=\"$HOME/.claude/command_history.log\"; if [ -f \"$log\" ] && [ \"$(wc -c < \"$log\")\" -gt 1048576 ]; then gzip -c \"$log\" > \"${log}.$(date +%Y%m%d%H%M%S).gz\" && > \"$log\"; fi"
           }
         ]
       }
