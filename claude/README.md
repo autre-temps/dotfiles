@@ -10,6 +10,7 @@
 ```
 claude/
 ├── README.md                    このファイル
+├── CLAUDE.md                    全般の行動規範（モデルへの共通指示）
 ├── settings.json                Claude Code の共通設定（permissions / hooks / 表示など）
 ├── output-styles/
 │   └── vampire-maid.md          出力スタイル「Vampire Maid」
@@ -20,12 +21,17 @@ claude/
 
 ## 各ファイルの内容
 
+### `CLAUDE.md`
+
+Claude Code 全体に効かせる行動規範です。`~/.claude/CLAUDE.md` として展開され、すべてのセッションの共通指示になります。`settings.json` の `permissions` / `hooks` が機械的な防壁を担うのに対し、こちらはモデル自身の判断の指針（防壁をすり抜けた場合の二重の歯止め）を受け持ちます。破壊的操作の禁止、権限昇格・秘密情報への不接触、外部影響のある操作の事前確認、ツール実行前の説明義務などを定めています。
+
 ### `settings.json`
 
 Claude Code の共通設定です。主な項目は次のとおりです。
 
 - **`permissions`** — `allow` / `deny` でツール実行の許否を制御します。
   - `deny` で `sudo`、`git reset`、`git rebase`、`wget`、`.env*` や秘密鍵（`id_rsa` / `id_ed25519`）の読み書きを禁止しています。
+- **`sandbox`** — Bash 実行をファイルシステム・ネットワークごと隔離します。`enabled` かつ `failIfUnavailable` のため、砂上の檻を組めない環境では Bash を止めます。Linux でこの隔離を支えるのは `bubblewrap`（`bwrap`、コマンドの隔離）と `socat`（許可ドメインへのネットワーク濾過）で、`install.sh` が apt で導入します。
 - **`hooks`** — ツール実行の前後に走るフックです。
   - `PreToolUse`（Bash）: `rm -rf` などの破壊的コマンドをブロックします。
   - `PostToolUse`（Write/Edit）: `.js` / `.ts` 系は `prettier`、`.py` は `uv run ruff format` で自動整形し、Bash コマンドは `~/.claude/command_history.log` に記録します。
@@ -33,7 +39,7 @@ Claude Code の共通設定です。主な項目は次のとおりです。
   - `outputStyle`: `Vampire Maid`
   - `language`: `japanese`
   - `theme`: `dark`
-  - `effortLevel`: `xhigh`
+  - `effortLevel`: `high`
   - `spinnerVerbs`: スピナー表示を `給仕中` に置き換え
   - `statusLine`: [ccstatusline](https://www.npmjs.com/package/ccstatusline) を利用。`bun add -g ccusage ccstatusline` でグローバル導入し、`~/.bun/bin` の実体を直に呼びます（`npx` での都度取得はしません）。
 
@@ -49,8 +55,9 @@ Claude Code の共通設定です。主な項目は次のとおりです。
 
 各ファイルを、対応する `~/.claude` 配下へ symlink で結びます。リポジトリ側を編集すれば、そのまま `~/.claude` に反映されます。この展開はリポジトリ直下の [`install.sh`](../install.sh) が一括して行うため、手作業は不要です。
 
-`install.sh` が結ぶのは次の三つ（`~/.claude` を館ごと結ばず、必要なファイルだけを個別に結ぶ方針です）。
+`install.sh` が結ぶのは次の四つ（`~/.claude` を館ごと結ばず、必要なファイルだけを個別に結ぶ方針です）。
 
+- `claude/CLAUDE.md` → `~/.claude/CLAUDE.md`
 - `claude/settings.json` → `~/.claude/settings.json`
 - `claude/output-styles/vampire-maid.md` → `~/.claude/output-styles/vampire-maid.md`
 - `claude/skills/commit/SKILL.md` → `~/.claude/skills/commit/SKILL.md`

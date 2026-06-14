@@ -51,7 +51,10 @@ export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 # --- 1. apt パッケージ ---------------------------------------------------
 # build-essential: treesitter の :TSUpdate に C コンパイラ/make が要る。
 # keychain: bashrc の ssh-agent 管理。
-APT_PKGS=(git curl unzip build-essential keychain ca-certificates)
+# bubblewrap / socat: Claude Code の sandbox（settings.json で enabled かつ failIfUnavailable）が
+#   Linux で使う。bwrap がコマンドを隔離し、socat がネットワーク濾過（許可ドメインへの
+#   プロキシ仲介）を担う。いずれか欠けると sandbox 化できず Bash が止まる。
+APT_PKGS=(git curl unzip build-essential keychain ca-certificates bubblewrap socat)
 if [ "$NO_APT" -eq 0 ]; then
     missing=()
     for p in "${APT_PKGS[@]}"; do
@@ -158,6 +161,7 @@ link "$DOTFILES_DIR/starship/starship.toml"              "$HOME/.config/starship
 link "$DOTFILES_DIR/nvim"                                "$HOME/.config/nvim"
 link "$DOTFILES_DIR/ccstatusline/settings.json"          "$HOME/.config/ccstatusline/settings.json"
 link "$DOTFILES_DIR/claude/settings.json"                "$HOME/.claude/settings.json"
+link "$DOTFILES_DIR/claude/CLAUDE.md"                    "$HOME/.claude/CLAUDE.md"
 link "$DOTFILES_DIR/claude/output-styles/vampire-maid.md" "$HOME/.claude/output-styles/vampire-maid.md"
 link "$DOTFILES_DIR/claude/skills/commit/SKILL.md"       "$HOME/.claude/skills/commit/SKILL.md"
 
