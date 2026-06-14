@@ -175,3 +175,168 @@ fzf-lua のウィンドウが開いているとき、以下のキーが使える
 ```
 
 ピッカー名一覧は `:FzfLua` のみで補完される。
+
+## claudecode.nvim（Claude Code 連携）
+
+[coder/claudecode.nvim](https://github.com/coder/claudecode.nvim) による Claude Code の nvim 統合。
+spec は [`lua/plugins/claudecode.lua`](lua/plugins/claudecode.lua)。
+
+Claude Code のターミナルを nvim 内に右ペインとして開き、バッファの追加・選択範囲の送信・diff の承認／拒否をキーマップから行える。
+
+### キーマップ
+
+すべてノーマルモード（`<leader>as` のみビジュアルモード兼用）。
+
+| キー | 説明 |
+| --- | --- |
+| `<leader>ac` | Claude Code ターミナルをトグル |
+| `<leader>af` | Claude Code ターミナルにフォーカス |
+| `<leader>ar` | `--resume` で前回のセッションを再開 |
+| `<leader>ab` | 現在のバッファをコンテキストに追加 |
+| `<leader>as`（ビジュアル） | 選択範囲を Claude Code に送信 |
+| `<leader>as`（oil / netrw / picker 上） | ツリー上のファイルをコンテキストに追加 |
+| `<leader>aa` | diff を承認 |
+| `<leader>ad` | diff を拒否 |
+
+### コマンド
+
+| コマンド | 説明 |
+| --- | --- |
+| `:ClaudeCode` | ターミナルをトグル |
+| `:ClaudeCodeFocus` | ターミナルにフォーカス |
+| `:ClaudeCodeAdd {file}` | ファイルをコンテキストに追加 |
+| `:ClaudeCodeSend` | 選択テキストを送信 |
+| `:ClaudeCodeDiffAccept` | diff を承認 |
+| `:ClaudeCodeDiffDeny` | diff を拒否 |
+
+## blink.cmp（補完）
+
+[saghen/blink.cmp](https://github.com/Saghen/blink.cmp) による補完エンジン。
+spec は [`lua/plugins/completion.lua`](lua/plugins/completion.lua)。
+
+Rust 製のファジーマッチャーを内蔵しており、バイナリ同梱のリリースタグにピン留めしているため Rust ツールチェーンは不要。LSP・パス・スニペット・バッファを補完ソースとして使用する。シグネチャヒントとドキュメント自動表示（200ms 遅延）も有効。
+
+スニペットは [rafamadriz/friendly-snippets](https://github.com/rafamadriz/friendly-snippets) をソースとする。
+
+### キーマップ（`default` プリセット）
+
+| キー | 説明 |
+| --- | --- |
+| `<C-n>` / `<C-p>` | 候補を下 / 上に移動 |
+| `<C-y>` | 選択中の候補を確定 |
+| `<C-space>` | 補完メニューをトグル |
+| `<C-e>` | 補完をキャンセル |
+
+## conform.nvim（フォーマッター）
+
+[stevearc/conform.nvim](https://github.com/stevearc/conform.nvim) による保存時フォーマット。
+spec は [`lua/plugins/conform.lua`](lua/plugins/conform.lua)。
+
+`BufWritePre` で自動実行し、Python ファイルに対して Mason が導入した ruff で `ruff_organize_imports → ruff_format` の順に整形する。LSP フォーマットは使わず ruff バイナリを直接呼び出す。タイムアウトは 1000ms。
+
+### コマンド
+
+| コマンド | 説明 |
+| --- | --- |
+| `:ConformInfo` | 現在のバッファに適用されるフォーマッターとその状態を表示 |
+
+## toggleterm.nvim（ターミナル）
+
+[akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) によるターミナル切り替え。
+spec は [`lua/plugins/toggleterm.lua`](lua/plugins/toggleterm.lua)。
+
+`<C-\>` でフローティングウィンドウのターミナルをトグルする。ノーマルモード・ターミナルモードどちらからでも同じキーで開閉できる。
+
+### キーマップ
+
+| キー | 説明 |
+| --- | --- |
+| `<C-\>` | ターミナルをトグル（ノーマル・ターミナルモード共通） |
+
+## render-markdown.nvim（Markdown レンダリング）
+
+[MeanderingProgrammer/render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim) によるバッファ内 Markdown レンダリング。
+spec は [`lua/plugins/render-markdown.lua`](lua/plugins/render-markdown.lua)。
+
+見出し・箇条書き・コードブロック・テーブル・引用をバッファ内で直接リッチ表示する。`markdown` filetype のバッファで遅延ロード。表示のオン／オフは `:RenderMarkdown toggle` で切り替えられる。
+
+依存として `nvim-treesitter`（`markdown` / `markdown_inline` パーサー）と `nvim-web-devicons` が必要。
+
+### コマンド
+
+| コマンド | 説明 |
+| --- | --- |
+| `:RenderMarkdown toggle` | レンダリングのオン／オフを切り替え |
+| `:RenderMarkdown enable` | レンダリングを有効化 |
+| `:RenderMarkdown disable` | レンダリングを無効化 |
+
+## tree-sitter-manager.nvim（Tree-sitter パーサー管理）
+
+[romus204/tree-sitter-manager.nvim](https://github.com/romus204/tree-sitter-manager.nvim) による Tree-sitter パーサーの管理とハイライト。
+spec は [`lua/plugins/tree-sitter-manager.lua`](lua/plugins/tree-sitter-manager.lua)。
+
+アーカイブされた `nvim-treesitter` の後継として導入。`auto_install = true` で開いたファイルのパーサーを自動取得する。Neovim 同梱パーサー（`c`・`lua`・`markdown` 等）はスキップ。パーサーのビルドには tree-sitter CLI（`bun install -g tree-sitter-cli`）と C コンパイラが必要。
+
+### コマンド
+
+| コマンド | 説明 |
+| --- | --- |
+| `:TSManager` | パーサー管理 UI を開く |
+| `:TSInstall {lang}` | 指定言語のパーサーをインストール |
+| `:TSUninstall {lang}` | 指定言語のパーサーをアンインストール |
+
+## noice.nvim（UI 改善）
+
+[folke/noice.nvim](https://github.com/folke/noice.nvim) によるコマンドラインと通知の UI 刷新。
+spec は [`lua/plugins/noice.lua`](lua/plugins/noice.lua)。
+
+Ex コマンドライン・検索プロンプトを画面下部の固定行でなく画面中央のポップアップで表示する（`command_palette` プリセット）。通知は [rcarriga/nvim-notify](https://github.com/rcarriga/nvim-notify) でフローティングウィンドウ表示になる。[MunifTanjim/nui.nvim](https://github.com/MunifTanjim/nui.nvim) が UI コンポーネントの基盤として必須。
+
+## oil.nvim（ファイラー）
+
+[stevearc/oil.nvim](https://github.com/stevearc/oil.nvim) によるバッファ編集型ファイラー。
+spec は [`lua/plugins/oil.lua`](lua/plugins/oil.lua)。
+
+ディレクトリの内容を通常バッファとして開き、行の追加・削除・変名・移動を行ってから `:w` で確定するという操作体系。`nvim .` でディレクトリを開いたときに netrw の代わりに起動するよう `lazy = false` で即時ロード。
+
+### キーマップ
+
+| キー | 説明 |
+| --- | --- |
+| `-` | 親ディレクトリを oil で開く |
+| `-`（oil バッファ内） | さらに上の親へ移動 |
+| `<Enter>` | ファイルを開く / ディレクトリへ移動 |
+
+### ファイル操作の流れ
+
+```text
+-          -- oil バッファを開く
+（行を追加） -- 新規ファイル作成
+（行を削除） -- ファイル削除
+（行をコピー＆改名） -- ファイル名変更・移動
+:w         -- 変更を確定（削除は確認ダイアログあり）
+```
+
+## winresizer（ウィンドウリサイズ）
+
+[simeji/winresizer](https://github.com/simeji/winresizer) によるインタラクティブなウィンドウサイズ変更。
+spec は [`lua/plugins/winresizer.lua`](lua/plugins/winresizer.lua)。
+
+`<C-e>` でリサイズモードに入り、hjkl でウィンドウの境界を動かす。`Enter` で確定、`q` でキャンセル。縦分割・横分割どちらの境界にも対応。
+
+### 操作
+
+| キー | 説明 |
+| --- | --- |
+| `<C-e>` | リサイズモード開始 |
+| `h` / `l` | 左右の境界を移動 |
+| `j` / `k` | 上下の境界を移動 |
+| `Enter` | リサイズを確定 |
+| `q` | リサイズをキャンセル |
+
+## dracula.nvim（カラースキーム）
+
+[Mofiqul/dracula.nvim](https://github.com/Mofiqul/dracula.nvim) による Dracula カラースキーム。
+spec は [`lua/plugins/dracula.lua`](lua/plugins/dracula.lua)。
+
+`priority = 1000` で最優先・即時ロードし、他プラグインの colorscheme 参照（lualine の `theme = "auto"` 等）より先に適用する。有効化は `lua/config/base.lua` の `colorscheme dracula`。
