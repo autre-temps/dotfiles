@@ -167,7 +167,30 @@ else
 	install -m755 "$tmp/stylua" "$HOME/.local/bin/stylua"
 fi
 
-# --- 11. symlink 展開 ----------------------------------------------------
+# --- 11. GitHub CLI (gh) -------------------------------------------------
+# 公式 apt リポジトリ経由で導入。キーリング・ソースリストは存在確認後に追加（冪等）。
+# --no-apt 時は skip。既に gh が入っていればインストールも skip。
+if has gh; then
+	skip "gh $(gh --version 2>/dev/null | head -1 | awk '{print $3}')"
+elif [ "$NO_APT" -eq 1 ]; then
+	skip "--no-apt 指定のため gh 導入を省略"
+else
+	log "GitHub CLI (gh) を公式 apt リポジトリから導入"
+	sudo mkdir -p -m 755 /etc/apt/keyrings
+	if [ ! -f /etc/apt/keyrings/githubcli-archive-keyring.gpg ]; then
+		curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
+			sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null
+		sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+	fi
+	if [ ! -f /etc/apt/sources.list.d/github-cli.list ]; then
+		echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" |
+			sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+	fi
+	sudo apt-get update -qq
+	sudo apt-get install -y gh
+fi
+
+# --- 12. symlink 展開 ----------------------------------------------------
 # 各設定を、対応する展開先へ symlink で結ぶ。実体があれば退避してから結ぶ。
 # 認証情報や履歴が同居する ~/.claude は館ごとは結ばず、必要なファイルだけ個別に。
 log "symlink を展開"
@@ -179,8 +202,10 @@ link "$DOTFILES_DIR/claude/settings.json" "$HOME/.claude/settings.json"
 link "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 link "$DOTFILES_DIR/claude/output-styles/vampire-maid.md" "$HOME/.claude/output-styles/vampire-maid.md"
 link "$DOTFILES_DIR/claude/skills/commit/SKILL.md" "$HOME/.claude/skills/commit/SKILL.md"
+link "$DOTFILES_DIR/git/gitconfig" "$HOME/.gitconfig"
+link "$DOTFILES_DIR/gh/config.yml" "$HOME/.config/gh/config.yml"
 
-# --- 12. MCP サーバー設定を ~/.claude.json へ適用 ------------------------
+# --- 13. MCP サーバー設定を ~/.claude.json へ適用 ------------------------
 # mcp-servers.json の mcpServers を ~/.claude.json にマージする（冪等）。
 # ~/.claude.json が未存在の場合は mcp-servers.json の内容をそのまま書き出す。
 MCP_SRC="$DOTFILES_DIR/claude/mcp-servers.json"
