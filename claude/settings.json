@@ -1,7 +1,37 @@
 {
   "permissions": {
-    "defaultMode": "default",
-    "disableBypassPermissionsMode": "disable",
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(git status)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(tree:*)",
+      "Bash(cp:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(echo:*)",
+      "Bash(do)",
+      "Bash(then)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(for:*)",
+      "Bash(npm install:*)",
+      "Bash(npm exec:*)",
+      "Bash(npx:*)",
+      "Bash(bun:*)",
+      "Bash(uv run test:*)",
+      "Bash(npm ls:*)",
+      "Bash(true)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:code.claude.com)"
+    ],
     "deny": [
       "Bash(sudo:*)",
       "Bash(chmod:*)",
@@ -44,59 +74,8 @@
       "Bash(wget:*)",
       "Bash(pkill:*)"
     ],
-    "allow": [
-      "Bash(npm run:*)",
-      "Bash(git status)",
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)",
-      "Bash(ls:*)",
-      "Bash(mkdir:*)",
-      "Bash(touch:*)",
-      "Bash(tree:*)",
-      "Bash(cp:*)",
-      "Bash(cat:*)",
-      "Bash(grep:*)",
-      "Bash(find:*)",
-      "Bash(echo:*)",
-      "Bash(do)",
-      "Bash(then)",
-      "Bash(else)",
-      "Bash(fi)",
-      "Bash(done)",
-      "Bash(for:*)",
-      "Bash(npm install:*)",
-      "Bash(npm exec:*)",
-      "Bash(npx:*)",
-      "Bash(bun:*)",
-      "Bash(uv run test:*)",
-      "Bash(npm ls:*)",
-      "Bash(true)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:docs.anthropic.com)",
-      "WebFetch(domain:code.claude.com)"
-    ]
-  },
-  "sandbox": {
-    "enabled": true,
-    "autoAllowBashIfSandboxed": true,
-    "allowUnsandboxedCommands": false,
-    "failIfUnavailable": true,
-    "filesystem": {
-      "denyRead": ["~/"],
-      "allowRead": ["."],
-      "allowWrite": []
-    },
-    "network": {
-      "allowedDomains": [
-        "github.com",
-        "api.github.com",
-        "registry.npmjs.org",
-        "pypi.org",
-        "docs.anthropic.com",
-        "code.claude.com"
-      ]
-    }
+    "defaultMode": "default",
+    "disableBypassPermissionsMode": "disable"
   },
   "hooks": {
     "PreToolUse": [
@@ -168,6 +147,31 @@
   },
   "outputStyle": "Vampire Maid",
   "language": "japanese",
+  "sandbox": {
+    "enabled": false,
+    "failIfUnavailable": true,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "api.github.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "docs.anthropic.com",
+        "code.claude.com"
+      ]
+    },
+    "filesystem": {
+      "allowWrite": [],
+      "denyRead": [
+        "~/"
+      ],
+      "allowRead": [
+        "."
+      ]
+    }
+  },
   "spinnerVerbs": {
     "mode": "replace",
     "verbs": [
