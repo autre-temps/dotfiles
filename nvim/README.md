@@ -391,3 +391,62 @@ spec は [`lua/plugins/bufferline.lua`](lua/plugins/bufferline.lua)。
 | `:BufferLineTogglePin` | カレントバッファのピン留めをトグル |
 | `:BufferLineCloseOthers` | カレント以外のバッファを閉じる |
 | `:BufferLinePick` | 文字キーでバッファをジャンプ選択 |
+
+## orgmode.nvim（org-mode）
+
+[nvim-orgmode/orgmode](https://github.com/nvim-orgmode/orgmode) による Emacs org-mode の移植。
+見出し記号の整形は [nvim-orgmode/org-bullets.nvim](https://github.com/nvim-orgmode/org-bullets.nvim) が担う。
+spec は [`lua/plugins/orgmode.lua`](lua/plugins/orgmode.lua)。
+
+`.org` filetype のバッファで遅延ロード。org ファイルは `~/org/` 以下に置き、キャプチャの既定ノートは `~/org/inbox.org`。
+
+### キーマップ
+
+すべて `.org` バッファ内で有効（一部は任意のバッファから呼び出し可）。
+
+#### アジェンダ・キャプチャ
+
+| キー | 説明 |
+| --- | --- |
+| `<leader>oa` | アジェンダビューを開く |
+| `<leader>oc` | キャプチャ（org-capture 相当）を起動 |
+
+#### ファイル内移動・編集
+
+| キー | 説明 |
+| --- | --- |
+| `<Tab>` | 見出しの折り畳みをトグル |
+| `<S-Tab>` | すべての折り畳みをグローバルにトグル |
+| `<localleader>i` | タイムスタンプを挿入 |
+| `<localleader>t` | TODO 状態をサイクル |
+| `<localleader>p` | 優先度をサイクル |
+| `<localleader>n` | アーカイブ |
+| `<CR>`（リンク上） | リンクを開く |
+| `[[` | リンクを挿入 |
+
+> `<localleader>` は `\`（バックスラッシュ）。
+
+#### 日付・スケジュール
+
+| キー | 説明 |
+| --- | --- |
+| `<localleader>s` | `SCHEDULED:` を設定 |
+| `<localleader>d` | `DEADLINE:` を設定 |
+
+### コマンド
+
+| コマンド | 説明 |
+| --- | --- |
+| `:OrgAgenda` | アジェンダビューを開く |
+| `:OrgCapture` | キャプチャを起動 |
+
+### ファイル配置
+
+```text
+~/org/
+├── inbox.org   -- キャプチャの既定ノート
+├── todo.org    -- タスク管理
+└── ...         -- アジェンダ対象（~/org/**/* を自動検索）
+```
+
+> `~/org/` ディレクトリがなければ初回起動前に作成しておく（`mkdir ~/org`）。
