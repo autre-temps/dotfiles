@@ -355,3 +355,39 @@ spec は [`lua/plugins/dropbar.lua`](lua/plugins/dropbar.lua)。
 | キー | 説明 |
 | --- | --- |
 | `<leader>;` | 現在位置のシンボルを fzf 風ピッカーで絞り込み（クリックと同等の操作をキーボードで行える） |
+
+## bufferline.nvim（バッファライン）
+
+[akinsho/bufferline.nvim](https://github.com/akinsho/bufferline.nvim) による、開いているバッファのタブ風表示。
+spec は [`lua/plugins/bufferline.lua`](lua/plugins/bufferline.lua)。
+
+画面上部の tabline に、開いている各バッファをタブ風に並べる。既定の **buffers モード**で動作し、ファイル名・ファイルタイプアイコン・変更マーク・LSP の diagnostics 件数を各タブに表示する。配色は現在の colorscheme（Dracula）に追従し、区切りは lualine の powerline 形状に合わせた `slant`（斜めの区切り）。
+
+> このプラグインが扱うのは Vim の**タブページ**ではなく**バッファ**。`gh`/`gl`・`te`/`gn`（`keymaps.lua`）のタブページ操作とは独立しており、併用できる。
+
+依存として [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) が必要。Nerd Font が端末フォントに設定されていないとアイコンは豆腐になる。
+
+### キーマップ
+
+すべてノーマルモード。
+
+| キー | 説明 |
+| --- | --- |
+| `[b` | 前のバッファへ移動 |
+| `]b` | 次のバッファへ移動 |
+| `[B` | カレントバッファをタブ列の左へ移動 |
+| `]B` | カレントバッファをタブ列の右へ移動 |
+| `<leader>bp` | カレントバッファのピン留めをトグル |
+| `<leader>bo` | カレント以外のバッファを閉じる |
+
+> バッファの絞り込み・選択は fzf-lua の `<Space>fb`（開いているバッファを検索）も利用できる。
+
+### コマンド
+
+| コマンド | 説明 |
+| --- | --- |
+| `:BufferLineCyclePrev` / `:BufferLineCycleNext` | 前 / 次のバッファへ移動 |
+| `:BufferLineMovePrev` / `:BufferLineMoveNext` | バッファをタブ列の左 / 右へ移動 |
+| `:BufferLineTogglePin` | カレントバッファのピン留めをトグル |
+| `:BufferLineCloseOthers` | カレント以外のバッファを閉じる |
+| `:BufferLinePick` | 文字キーでバッファをジャンプ選択 |
