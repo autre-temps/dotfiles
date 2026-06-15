@@ -340,3 +340,18 @@ spec は [`lua/plugins/winresizer.lua`](lua/plugins/winresizer.lua)。
 spec は [`lua/plugins/dracula.lua`](lua/plugins/dracula.lua)。
 
 `priority = 1000` で最優先・即時ロードし、他プラグインの colorscheme 参照（lualine の `theme = "auto"` 等）より先に適用する。有効化は `lua/config/base.lua` の `colorscheme dracula`。
+
+## dropbar.nvim（winbar パンくずリスト）
+
+[Bekaboo/dropbar.nvim](https://github.com/Bekaboo/dropbar.nvim) による IDE 風のパンくずリスト表示。
+spec は [`lua/plugins/dropbar.lua`](lua/plugins/dropbar.lua)。
+
+ウィンドウ上部の winbar に現在のカーソル位置（ファイルパス → シンボル階層）を表示する。ソースは LSP を優先し、未接続の場合は Treesitter にフォールバック。Markdown ファイルは専用ソースで見出し階層を表示する。
+
+依存として `nvim-web-devicons` が必要。
+
+### キーマップ
+
+| キー | 説明 |
+| --- | --- |
+| `<leader>;` | 現在位置のシンボルを fzf 風ピッカーで絞り込み（クリックと同等の操作をキーボードで行える） |
