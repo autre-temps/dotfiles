@@ -244,5 +244,6 @@
     ]
   },
   "effortLevel": "high",
-  "theme": "dark"
+  "theme": "dark",
+  "model": "sonnet"
 }

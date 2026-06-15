@@ -121,7 +121,6 @@ fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 export PATH="$HOME/.local/bin:$PATH"
-export ANTHROPIC_MODEL=claude-opus-4-8
 
 # starship prompt — only in a real interactive terminal. Tools that spawn
 # `bash -i` with piped (non-TTY) output (e.g. Claude Code) would otherwise get
