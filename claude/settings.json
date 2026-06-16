@@ -182,7 +182,7 @@
           },
           {
             "type": "command",
-            "command": "log=\"$HOME/.claude/command_history.log\"; if [ -f \"$log\" ] && [ \"$(wc -c < \"$log\")\" -gt 1048576 ]; then gzip -c \"$log\" > \"${log}.$(date +%Y%m%d%H%M%S).gz\" && > \"$log\"; fi"
+            "command": "log=\"$HOME/.claude/command_history.log\"; if [ -f \"$log\" ] && [ \"$(wc -c < \"$log\")\" -gt 1048576 ]; then > \"$log\"; fi"
           }
         ]
       }
@@ -207,7 +207,7 @@
   "outputStyle": "Vampire Maid",
   "language": "japanese",
   "sandbox": {
-    "enabled": false,
+    "enabled": true,
     "failIfUnavailable": true,
     "autoAllowBashIfSandboxed": true,
     "allowUnsandboxedCommands": false,
