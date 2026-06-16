@@ -260,7 +260,7 @@ spec は [`lua/plugins/render-markdown.lua`](lua/plugins/render-markdown.lua)。
 
 見出し・箇条書き・コードブロック・テーブル・引用をバッファ内で直接リッチ表示する。`markdown` filetype のバッファで遅延ロード。表示のオン／オフは `:RenderMarkdown toggle` で切り替えられる。
 
-依存として `nvim-treesitter`（`markdown` / `markdown_inline` パーサー）と `nvim-web-devicons` が必要。
+依存として `nvim-web-devicons` が必要。`markdown` / `markdown_inline` パーサーは Neovim 同梱のため別途インストール不要。
 
 ### コマンド
 

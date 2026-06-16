@@ -4,7 +4,6 @@ return {
 	{
 		"nvim-orgmode/orgmode",
 		ft = "org",
-		dependencies = { "nvim-treesitter/nvim-treesitter" },
 		opts = {
 			-- org ファイルの置き場。~/org/ 以下の .org を全て対象にする
 			org_agenda_files = { "~/org/**/*" },
