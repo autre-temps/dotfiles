@@ -29,6 +29,8 @@
       "Bash(uniq:*)",
       "Bash(rg:*)",
       "Bash(diff:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
       "Bash(which:*)",
       "Bash(type:*)",
       "Bash(uv --version)",
@@ -246,7 +248,8 @@
         "~/.gitconfig",
         "~/.local/bin",
         "~/.bun/bin",
-        "~/.local/share/uv"
+        "~/.local/share/uv",
+        "~/.ssh"
       ]
     }
   },
