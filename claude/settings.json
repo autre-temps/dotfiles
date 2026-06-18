@@ -13,9 +13,7 @@
       "Bash(cp:*)",
       "Bash(grep:*)",
       "Bash(find:*)",
-      "Bash(for:*)",
       "Bash(npm install:*)",
-      "Bash(npm exec:*)",
       "Bash(bun install:*)",
       "Bash(bun add:*)",
       "Bash(bun remove:*)",
@@ -79,6 +77,12 @@
       "Read(**/id_rsa)",
       "Read(**/id_ed25519)",
       "Read(**/*.pem)",
+      "Edit(**/*.pem)",
+      "Edit(**/id_rsa)",
+      "Edit(**/id_ed25519)",
+      "Write(**/*.pem)",
+      "Write(**/id_rsa)",
+      "Write(**/id_ed25519)",
       "Edit(~/.ssh/**)",
       "Edit(~/.aws/**)",
       "Edit(**/.env*)",
@@ -134,6 +138,8 @@
       "Bash(git rm:*)",
       "Bash(git stash:*)",
       "Bash(git restore:*)",
+      "Bash(for:*)",
+      "Bash(npm exec:*)",
       "Bash(npx:*)",
       "Bash(bun x:*)",
       "Bash(rm:*)"
@@ -177,7 +183,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"[$(date)] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/command_history.log"
+            "command": "printf '[%s] %s: %s\\n' \"$(date)\" \"$USER\" \"$(jq -r '.tool_input.command')\" >> ~/.claude/command_history.log"
           }
         ]
       }
@@ -227,7 +233,8 @@
         "registry.npmjs.org",
         "pypi.org",
         "docs.anthropic.com",
-        "code.claude.com"
+        "code.claude.com",
+        "docs.python.org"
       ]
     },
     "filesystem": {
@@ -236,7 +243,10 @@
         "~/"
       ],
       "allowRead": [
-        "."
+        "~/.gitconfig",
+        "~/.local/bin",
+        "~/.bun/bin",
+        "~/.local/share/uv"
       ]
     }
   },
@@ -248,5 +258,5 @@
   },
   "effortLevel": "high",
   "theme": "dark",
-  "model": "sonnet"
+  "model": "claude-opus-4-6"
 }
