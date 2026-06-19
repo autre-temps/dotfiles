@@ -34,20 +34,28 @@ nvim/
     ├── config/
     │   ├── lazy.lua          lazy.nvim ブートストラップ
     │   └── lsp.lua           LSP 設定
-    └── plugins/                   プラグインごとの spec
-        ├── claudecode.lua         Claude Code nvim 連携
-        ├── commentary.lua         コメントアウト
-        ├── completion.lua         補完
-        ├── conform.lua            フォーマッタ
-        ├── dracula.lua            カラースキーム（Dracula）
-        ├── fzf-lua.lua            ファジーファインダー
-        ├── lualine.lua            ステータスライン
-        ├── noice.lua              コマンドライン（Ex）の中央ポップアップ表示
-        ├── oil.lua                バッファとして編集するファイラ
-        ├── render-markdown.lua    Markdown のインライン描画
-        ├── toggleterm.lua         端末トグル（浮き窓）
+    └── plugins/                     プラグインごとの spec
+        ├── autopairs.lua            括弧の自動ペアリング
+        ├── bufferline.lua           バッファのタブ風表示
+        ├── claudecode.lua           Claude Code nvim 連携
+        ├── commentary.lua           コメントアウト
+        ├── completion.lua           補完
+        ├── conform.lua              フォーマッタ
+        ├── dracula.lua              カラースキーム（Dracula）
+        ├── dropbar.lua              winbar パンくずリスト
+        ├── flash.lua                ジャンプ・検索ナビゲーション
+        ├── fzf-lua.lua              ファジーファインダー
+        ├── gitsigns.lua             Git 変更のサイン表示
+        ├── lualine.lua              ステータスライン
+        ├── noice.lua                コマンドライン（Ex）の中央ポップアップ表示
+        ├── oil.lua                  バッファとして編集するファイラ
+        ├── orgmode.lua              Org-mode
+        ├── render-markdown.lua      Markdown のインライン描画
+        ├── surround.lua             囲み文字の操作
+        ├── toggleterm.lua           端末トグル（浮き窓）
         ├── tree-sitter-manager.lua  シンタックスハイライト（treesitter）
-        └── winresizer.lua         ウィンドウリサイズ
+        ├── which-key.lua            キーバインドのヒント表示
+        └── winresizer.lua           ウィンドウリサイズ
 ```
 
 各プラグインの使い方（コメントアウトの [vim-commentary](https://github.com/tpope/vim-commentary) など）は [`nvim/README.md`](nvim/README.md) にまとめてある。

@@ -4,6 +4,13 @@
 
 プラグインの spec は `lua/plugins/` 配下に一つずつ置いてある。
 
+## nvim-autopairs（自動括弧補完）
+
+[windwp/nvim-autopairs](https://github.com/windwp/nvim-autopairs) による括弧・引用符の自動ペアリング。
+spec は [`lua/plugins/autopairs.lua`](lua/plugins/autopairs.lua)。
+
+`(` を入力すると `)` が自動で補完され、カーソルは括弧の内側に置かれる。`"` `'` `` ` `` `{` `[` も同様。`InsertEnter` で遅延ロード。
+
 ## vim-commentary（コメントアウト）
 
 [tpope/vim-commentary](https://github.com/tpope/vim-commentary) によるコメントアウト操作。
@@ -89,6 +96,20 @@ spec は [`lua/plugins/lualine.lua`](lua/plugins/lualine.lua)。配色（`option
 ### 導入
 
 `lua/plugins/` に spec を置けば、次回 nvim 起動時に lazy.nvim が自動でインストールする。確実に取り込む・バージョンを固定するには `:Lazy sync`。
+
+## flash.nvim（ジャンプナビゲーション）
+
+[folke/flash.nvim](https://github.com/folke/flash.nvim) によるラベルベースのジャンプ・検索ナビゲーション。
+spec は [`lua/plugins/flash.lua`](lua/plugins/flash.lua)。
+
+検索文字を入力するとマッチ位置にラベルが表示され、ラベルキーを押すだけでジャンプできる。Treesitter ベースの選択も可能。
+
+### キーマップ
+
+| キー | モード | 説明 |
+| --- | --- | --- |
+| `s` | ノーマル・ビジュアル・オペレータ待ち | Flash ジャンプ（文字検索→ラベル選択） |
+| `S` | ノーマル・ビジュアル・オペレータ待ち | Flash Treesitter（構文ノード単位で選択） |
 
 ## fzf-lua（ファジーファインダー）
 
@@ -176,6 +197,27 @@ fzf-lua のウィンドウが開いているとき、以下のキーが使える
 
 ピッカー名一覧は `:FzfLua` のみで補完される。
 
+## gitsigns.nvim（Git 変更表示）
+
+[lewis6991/gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) によるバッファ内の Git 差分表示。
+spec は [`lua/plugins/gitsigns.lua`](lua/plugins/gitsigns.lua)。
+
+行番号の左に追加（`▎`）・変更（`▎`）・削除（`▁`）のサインを表示する。hunk 単位のステージ・リセット・プレビュー・blame もキーマップから行える。
+
+### キーマップ
+
+すべてノーマルモード。Git 管理下のバッファで有効。
+
+| キー | 説明 |
+| --- | --- |
+| `]c` | 次の hunk へ移動 |
+| `[c` | 前の hunk へ移動 |
+| `<leader>hs` | hunk をステージ |
+| `<leader>hr` | hunk をリセット |
+| `<leader>hu` | ステージを取り消し |
+| `<leader>hp` | hunk をプレビュー |
+| `<leader>hb` | カレント行の blame をフル表示 |
+
 ## claudecode.nvim（Claude Code 連携）
 
 [coder/claudecode.nvim](https://github.com/coder/claudecode.nvim) による Claude Code の nvim 統合。
@@ -239,6 +281,22 @@ spec は [`lua/plugins/conform.lua`](lua/plugins/conform.lua)。
 | コマンド | 説明 |
 | --- | --- |
 | `:ConformInfo` | 現在のバッファに適用されるフォーマッターとその状態を表示 |
+
+## nvim-surround（囲み文字操作）
+
+[kylechui/nvim-surround](https://github.com/kylechui/nvim-surround) による囲み文字（括弧・引用符・タグなど）の追加・変更・削除。
+spec は [`lua/plugins/surround.lua`](lua/plugins/surround.lua)。
+
+### キーマップ
+
+| 操作 | 説明 |
+| --- | --- |
+| `ys{motion}{char}` | モーション範囲を `char` で囲む（例: `ysiw"` でカーソル下の単語を `"` で囲む） |
+| `ds{char}` | 最も近い `char` の囲みを削除（例: `ds"` で `"` を剥がす） |
+| `cs{old}{new}` | 囲み文字を変更（例: `cs"'` で `"` → `'`） |
+| `S{char}`（ビジュアル） | 選択範囲を `char` で囲む |
+
+> `char` には `"` `'` `` ` `` `(` `)` `{` `}` `[` `]` `<` `>` `t`（HTML タグ）などが使える。
 
 ## toggleterm.nvim（ターミナル）
 
@@ -333,6 +391,13 @@ spec は [`lua/plugins/winresizer.lua`](lua/plugins/winresizer.lua)。
 | `j` / `k` | 上下の境界を移動 |
 | `Enter` | リサイズを確定 |
 | `q` | リサイズをキャンセル |
+
+## which-key.nvim（キーバインドヒント）
+
+[folke/which-key.nvim](https://github.com/folke/which-key.nvim) によるキーバインドのヒント表示。
+spec は [`lua/plugins/which-key.lua`](lua/plugins/which-key.lua)。
+
+`<leader>` などのプレフィクスキーを押して少し待つと、続くキーの候補とその説明がポップアップで表示される。設定済みのキーマップを覚えていなくても、その場で探して実行できる。
 
 ## dracula.nvim（カラースキーム）
 
