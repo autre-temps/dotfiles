@@ -205,30 +205,19 @@ link "$DOTFILES_DIR/claude/skills/commit/SKILL.md" "$HOME/.claude/skills/commit/
 link "$DOTFILES_DIR/git/gitconfig" "$HOME/.gitconfig"
 link "$DOTFILES_DIR/gh/config.yml" "$HOME/.config/gh/config.yml"
 
-# --- 13. MCP サーバー設定を ~/.claude.json へ適用 ------------------------
-# mcp-servers.json の mcpServers を ~/.claude.json にマージする（冪等）。
-# ~/.claude.json が未存在の場合は mcp-servers.json の内容をそのまま書き出す。
-MCP_SRC="$DOTFILES_DIR/claude/mcp-servers.json"
-CLAUDE_JSON="$HOME/.claude.json"
-if [ -f "$MCP_SRC" ]; then
-	log "MCP サーバー設定を $CLAUDE_JSON へ適用"
-	python3 - "$MCP_SRC" "$CLAUDE_JSON" <<'PYEOF'
-import json, sys, os
-mcp_path, cfg_path = sys.argv[1], sys.argv[2]
-with open(mcp_path) as f:
-    mcp = json.load(f)
-if os.path.exists(cfg_path):
-    with open(cfg_path) as f:
-        cfg = json.load(f)
-else:
-    cfg = {}
-cfg.setdefault("mcpServers", {}).update(mcp["mcpServers"])
-with open(cfg_path, "w") as f:
-    json.dump(cfg, f, indent=2, ensure_ascii=False)
-PYEOF
-else
-	skip "claude/mcp-servers.json が見当たらないため MCP 設定をスキップ"
-fi
+# --- 13. MCP サーバー (user スコープ) ------------------------------------
+# claude mcp add-json --scope user で登録。既に存在すれば skip。
+mcp_add() {
+	local name="$1" json="$2"
+	if claude mcp get "$name" >/dev/null 2>&1; then
+		skip "mcp: $name"
+	else
+		log "mcp: $name を導入"
+		claude mcp add-json --scope user "$name" "$json"
+	fi
+}
+
+mcp_add pdf-mcp '{"type":"stdio","command":"uvx","args":["--with","httpx[socks]","pdf-mcp"],"env":{}}'
 
 # --- 任意: win32yank (WSL の nvim クリップボード補強) --------------------
 # clipboard=unnamedplus は WSL では clip.exe/powershell.exe で概ね足りるが、
