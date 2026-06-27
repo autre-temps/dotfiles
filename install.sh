@@ -55,7 +55,11 @@ export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 #   Linux で使う。bwrap がコマンドを隔離し、socat がネットワーク濾過（許可ドメインへの
 #   プロキシ仲介）を担う。いずれか欠けると sandbox 化できず Bash が止まる。
 # ripgrep: fzf-lua の live grep が内部で使う高速全文検索ツール。
-APT_PKGS=(git curl unzip build-essential keychain ca-certificates bubblewrap socat ripgrep shfmt)
+# poppler-utils: pdftotext/pdfinfo 等。pdf-mcp を補う CLI 操作用。
+# pandoc: PDF→Markdown 等の文書変換。
+# tesseract-ocr + tesseract-ocr-jpn: スキャン PDF の OCR（日本語対応）。
+APT_PKGS=(git curl unzip build-essential keychain ca-certificates bubblewrap socat ripgrep shfmt
+	poppler-utils pandoc tesseract-ocr tesseract-ocr-jpn)
 if [ "$NO_APT" -eq 0 ]; then
 	missing=()
 	for p in "${APT_PKGS[@]}"; do
@@ -217,7 +221,7 @@ mcp_add() {
 	fi
 }
 
-mcp_add pdf-mcp '{"type":"stdio","command":"uvx","args":["--with","httpx[socks]","pdf-mcp"],"env":{}}'
+mcp_add pdf-mcp '{"type":"stdio","command":"uvx","args":["--with","httpx[socks]","--with","fastembed","pdf-mcp"],"env":{}}'
 
 # --- 任意: win32yank (WSL の nvim クリップボード補強) --------------------
 # clipboard=unnamedplus は WSL では clip.exe/powershell.exe で概ね足りるが、
