@@ -14,12 +14,6 @@
       "Bash(grep:*)",
       "Bash(find:*)",
       "Bash(npm install:*)",
-      "Bash(bun install:*)",
-      "Bash(bun add:*)",
-      "Bash(bun remove:*)",
-      "Bash(bun run:*)",
-      "Bash(bun test:*)",
-      "Bash(bun build:*)",
       "Bash(npm ls:*)",
       "Bash(true)",
       "Bash(head:*)",
@@ -145,13 +139,12 @@
       "Bash(for:*)",
       "Bash(npm exec:*)",
       "Bash(npx:*)",
-      "Bash(bun x:*)",
       "Bash(rm:*)"
     ],
     "defaultMode": "default",
     "disableBypassPermissionsMode": "disable"
   },
-  "model": "claude-opus-4-6",
+  "model": "claude-opus-4-7",
   "hooks": {
     "PreToolUse": [
       {
@@ -220,14 +213,17 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "PATH=\"/home/ping/.bun/bin:$PATH\" ccstatusline",
+    "command": "/home/ping/.local/bin/ccstatusline",
     "padding": 0,
     "refreshInterval": 10
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
   },
   "outputStyle": "Vampire Maid",
   "language": "japanese",
   "sandbox": {
-    "enabled": true,
+    "enabled": false,
     "failIfUnavailable": true,
     "autoAllowBashIfSandboxed": false,
     "allowUnsandboxedCommands": false,
@@ -255,7 +251,7 @@
       "allowRead": [
         "~/.gitconfig",
         "~/.local/bin",
-        "~/.bun/bin",
+        "/usr/local/bin",
         "~/.local/share/uv",
         "~/.ssh",
         "~/.claude"
@@ -268,9 +264,7 @@
       "給仕中"
     ]
   },
-  "effortLevel": "high",
-  "theme": "dark",
-  "enabledPlugins": {
-    "frontend-design@claude-plugins-official": true
-  }
+  "effortLevel": "xhigh",
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark"
 }
