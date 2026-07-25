@@ -58,8 +58,9 @@ export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 # poppler-utils: pdftotext/pdfinfo 等。pdf-mcp を補う CLI 操作用。
 # pandoc: PDF→Markdown 等の文書変換。
 # tesseract-ocr + tesseract-ocr-jpn: スキャン PDF の OCR（日本語対応）。
+# man-db: man コマンド本体と apropos/whatis 系。Debian の最小構成では入っていない。
 APT_PKGS=(git curl unzip build-essential keychain ca-certificates bubblewrap socat ripgrep shfmt
-	poppler-utils pandoc tesseract-ocr tesseract-ocr-jpn)
+	poppler-utils pandoc tesseract-ocr tesseract-ocr-jpn man-db)
 if [ "$NO_APT" -eq 0 ]; then
 	missing=()
 	for p in "${APT_PKGS[@]}"; do
