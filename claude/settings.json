@@ -132,7 +132,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "c=\"$(jq -r '.tool_input.command // empty')\"; if printf '%s' \"$c\" | grep -qE 'rm[[:space:]].*(-[a-zA-Z]*[rR]|--recursive)|dd[[:space:]]+if=|mkfs|:\\(\\)[[:space:]]*\\{'; then printf '%s' '{\"decision\":\"block\",\"reason\":\"危険な破壊的コマンドを検知したため実行を中止いたしました。別の手立てをご検討くださいませ。\"}'; elif printf '%s' \"$c\" | sed 's/\\.env\\.example//g' | grep -qE '\\.env|\\.ssh/|\\.aws/|id_rsa|id_ed25519|\\.pem|credentials|\\.config/gcloud|\\.azure|\\.kube/config|\\.vault-token|\\.tfstate|\\.docker/config|\\.npmrc|\\.pypirc|\\.config/gh|\\.gnupg|\\.netrc'; then printf '%s' '{\"decision\":\"block\",\"reason\":\"秘密情報への接触を検知したため実行を中止いたしました。\"}'; fi"
+            "command": "bash \"$HOME/.claude/hooks/bash-guard.sh\""
           }
         ]
       },

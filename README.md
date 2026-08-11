@@ -115,7 +115,7 @@ bash ~/dotfiles/install.sh --no-apt   # sudo apt を使う段を飛ばす
 - `stylua`（Lua フォーマッタ。GitHub Releases から `~/.local/bin` へ導入）
 - `gh`（GitHub CLI。公式 apt リポジトリ経由。`--no-apt` 時は skip）
 
-導入に続けて、**symlink を展開**する。`bash/bashrc`→`~/.bashrc`、`starship/starship.toml`→`~/.config/starship.toml`、`nvim`→`~/.config/nvim`、`ccstatusline/settings.json`→`~/.config/ccstatusline/settings.json`、`git/gitconfig`→`~/.gitconfig`、`gh/config.yml`→`~/.config/gh/config.yml`、`claude/` の設定・出力スタイル・スキルを `~/.claude` 配下へ、それぞれ結ぶ。展開先に実体ファイルがある場合は `.bak.<epoch>` へ退避してから結ぶため、上書きで失われることはない。`~/.claude` は認証情報や履歴が同居するため館ごとは結ばず、必要なファイルだけを個別に結ぶ。
+導入に続けて、**symlink を展開**する。`bash/bashrc`→`~/.bashrc`、`starship/starship.toml`→`~/.config/starship.toml`、`nvim`→`~/.config/nvim`、`ccstatusline/settings.json`→`~/.config/ccstatusline/settings.json`、`git/gitconfig`→`~/.gitconfig`、`gh/config.yml`→`~/.config/gh/config.yml`、`claude/` の設定・フック・出力スタイル・スキルを `~/.claude` 配下へ、それぞれ結ぶ。展開先に実体ファイルがある場合は `.bak.<epoch>` へ退避してから結ぶため、上書きで失われることはない。`~/.claude` は認証情報や履歴が同居するため館ごとは結ばず、必要なファイルだけを個別に結ぶ。
 
 さらに `claude/mcp-servers.json` の `mcpServers` を `~/.claude.json` へマージする（冪等）。
 

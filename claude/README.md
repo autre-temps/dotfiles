@@ -13,6 +13,8 @@ claude/
 ├── CLAUDE.md                    全般の行動規範（モデルへの共通指示）
 ├── settings.json                Claude Code の共通設定（permissions / hooks / 表示など）
 ├── mcp-servers.json             MCP サーバー設定（~/.claude.json へマージ）
+├── hooks/
+│   └── bash-guard.sh            Bash 実行前の門番（破壊的コマンド・秘密情報の検知）
 ├── output-styles/
 │   └── vampire-maid.md          出力スタイル「Vampire Maid」
 └── skills/
@@ -35,7 +37,7 @@ Claude Code の共通設定です。主な項目は次のとおりです。
   - `ask` で `git push`・`git reset --hard`・`git rebase`・`wget`・`curl`・`docker`・`npm publish`・`rm` など、取り消しが難しい操作や外部送信を確認付きにしています。
 - **`sandbox`** — Bash 実行をファイルシステム・ネットワークごと隔離します。`enabled` かつ `failIfUnavailable` のため、砂上の檻を組めない環境では Bash を止めます。Linux でこの隔離を支えるのは `bubblewrap`（`bwrap`、コマンドの隔離）と `socat`（許可ドメインへのネットワーク濾過）で、`install.sh` が apt で導入します。
 - **`hooks`** — ツール実行の前後に走るフックです。
-  - `PreToolUse`（Bash）: `rm -rf` などの破壊的コマンドをブロックします。
+  - `PreToolUse`（Bash）: [`hooks/bash-guard.sh`](hooks/bash-guard.sh) を呼び、破壊的コマンドと秘密情報への接触を差し止めます（後述）。
   - `PostToolUse`（Write/Edit）: `.js` / `.ts` 系は `prettier`、`.py` は `uv run ruff format` で自動整形し、Bash コマンドは `~/.claude/command_history.log` に記録します。
   - `Stop`: セッション終了時に Windows 通知音を鳴らし、`command_history.log` が 1MB を超えていれば空にします。
   - `Notification`: 通知イベント時に Windows の nudge 音を鳴らします。
@@ -48,6 +50,19 @@ Claude Code の共通設定です。主な項目は次のとおりです。
   - `spinnerVerbs`: スピナー表示を `給仕中` に置き換え
   - `statusLine`: [ccstatusline](https://www.npmjs.com/package/ccstatusline) を利用。`bun add -g ccusage ccstatusline` でグローバル導入し、`~/.bun/bin` の実体を直に呼びます（`npx` での都度取得はしません）。
   - `enabledPlugins`: `frontend-design` プラグインを有効化
+
+### `hooks/bash-guard.sh`
+
+`PreToolUse`（Bash）から呼ばれる門番です。**実際に走るコマンドだけ**を見て、破壊的な操作（`rm` の再帰削除・`dd`・`mkfs`・fork bomb）と秘密情報への接触（`.env` / `~/.ssh` / `~/.aws` / `*.pem` / `.npmrc` ほか `CLAUDE.md` に挙げた一式）を差し止めます。
+
+素朴な `grep` で命令文全体を検査すると、コミットメッセージの `.env`、`grep` の検索語 `credentials`、註釈やヒアドキュメント本文に書いた `rm -rf` まで獲物と見誤ります。この門番は次の手順で言及と実行を分けます。
+
+1. ヒアドキュメント本文を落とす。ただし `bash <<EOF` のように解釈器へ流す本文は実際に走るため残す
+2. 簡易なシェル字句解析でトークンへ割る。クォート内は 1 トークンにまとめ、行コメントは捨てる。`"..."` の中の `$( )` や `` ` ` `` は別立てで再検査する
+3. 破壊的コマンドは**コマンド位置のトークン**だけを見る。`sudo` / `xargs` / `timeout` などの被せ物は剥がし、`find -exec` の後ろも命令として扱う
+4. 秘密情報は**パスの形をしたトークン**だけを見る。空白を含む文字列（＝文章や検索語）と、パスでないオプション値は見ない。`.env.example` の類は見本として通す
+
+なお `bash -c` / `sh -c` / `python -c` / `node -e` のように文字列を解釈器へ渡す経路は、この門番ではなく `permissions.deny` が受け持ちます。
 
 ### `skills/commit/SKILL.md`
 
@@ -65,10 +80,11 @@ MCP（Model Context Protocol）サーバーの設定です。`install.sh` が `~
 
 各ファイルを、対応する `~/.claude` 配下へ symlink で結びます。リポジトリ側を編集すれば、そのまま `~/.claude` に反映されます。この展開はリポジトリ直下の [`install.sh`](../install.sh) が一括して行うため、手作業は不要です。
 
-`install.sh` が結ぶのは次の四つ（`~/.claude` を館ごと結ばず、必要なファイルだけを個別に結ぶ方針です）。
+`install.sh` が結ぶのは次の五つ（`~/.claude` を館ごと結ばず、必要なファイルだけを個別に結ぶ方針です）。
 
 - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md`
 - `claude/settings.json` → `~/.claude/settings.json`
+- `claude/hooks/bash-guard.sh` → `~/.claude/hooks/bash-guard.sh`
 - `claude/output-styles/vampire-maid.md` → `~/.claude/output-styles/vampire-maid.md`
 - `claude/skills/commit/SKILL.md` → `~/.claude/skills/commit/SKILL.md`
 
