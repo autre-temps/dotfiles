@@ -1,7 +1,7 @@
 ---
 name: commit
 description: >
-  このPythonプロジェクトに対して、安全にGitコミットを準備・作成します。
+  安全にGitコミットを準備・作成します。
   ユーザーが「commit」「コミットして」「commitしたい」と言ったときや、
   変更のステージング、コミットの分割、ruff/pytestチェック、コミットメッセージ作成を依頼したときに使用します。
 disable-model-invocation: true
