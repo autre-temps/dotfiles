@@ -170,6 +170,15 @@
             "command": "printf '[%s] %s: %s\\n' \"$(date)\" \"$USER\" \"$(jq -r '.tool_input.command')\" >> ~/.claude/command_history.log"
           }
         ]
+      },
+      {
+        "matcher": "WebSearch|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/web-guard.sh\""
+          }
+        ]
       }
     ],
     "Stop": [
