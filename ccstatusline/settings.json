@@ -26,6 +26,15 @@
         "color": "brightBlue"
       },
       {
+        "id": "11",
+        "type": "separator"
+      },
+      {
+        "id": "12",
+        "type": "weekly-usage",
+        "color": "brightYellow"
+      },
+      {
         "id": "6",
         "type": "separator"
       },
