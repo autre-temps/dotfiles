@@ -87,6 +87,8 @@ nvim/
 
 bash の設定（`~/.bashrc`）。ファイル単体を `~/.bashrc` へ symlink する（`install.sh` が行う）。starship の初期化と keychain（ssh-agent）の起動は、いずれも対話端末（TTY）でのみ働くようガードしてある。`bash -i` をパイプ出力で起こすツール（Claude Code など）に、starship の precmd / preexec が吐くエスケープが混入したり、keychain がパスフレーズ入力で止まったりするのを防ぐため。
 
+あわせて `claude` を同名の関数で包み、起動時のモデルに応じて `--effort` を補う。Claude Code の `effortLevel` は単一の値で、しかもセッション開始時にしか読まれないため、モデル別に分けるには起動時に渡すほかない。opus 5 なら `xhigh`、fable 5 なら `high`。有効なモデルは `--model` 引数 → `ANTHROPIC_MODEL` → `claude/settings.json` の `model` の順に探し、明示の `--effort` と `claude mcp` などの副コマンドには手を触れない。非対話シェルではこの bashrc が冒頭で `return` するため、フックやスクリプトが呼ぶ `claude` は素の実体のまま。
+
 ## git
 
 Git の設定（`~/.gitconfig`）。ファイル単体を `~/.gitconfig` へ symlink する（`install.sh` が行う）。

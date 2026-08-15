@@ -136,3 +136,58 @@ export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
 export LANG=ja_JP.UTF-8
 export LC_ALL=ja_JP.UTF-8
+
+# Claude Code — モデルに応じて effort を選ぶ。
+# settings.json の effortLevel は単一の値で、しかもセッション開始時にしか
+# 読まれない（実効値はセッション状態に載る）。モデルごとに分けるには起動時に
+# --effort で渡すほかないため、ここで補う。opus 5 → xhigh、fable 5 → high。
+# 非対話シェルではこの bashrc が冒頭で return するため、フックやスクリプトが
+# 呼ぶ claude は素の実体のまま。
+_claude_effort_for_model() {
+    case "${1%%\[*}" in                      # opus[1m] の 1M 接尾辞を落とす
+        opus|opus-5|claude-opus-5)    echo xhigh ;;
+        fable|fable-5|claude-fable-5) echo high  ;;
+    esac
+}
+
+# 有効なモデルを --model 引数 → ANTHROPIC_MODEL → settings.json の順に探す
+_claude_model_for_effort() {
+    local arg prev=
+    for arg in "$@"; do
+        [ "$prev" = "--model" ] && { echo "$arg"; return; }
+        case $arg in
+            --model=*) echo "${arg#--model=}"; return ;;
+        esac
+        prev=$arg
+    done
+    [ -n "${ANTHROPIC_MODEL:-}" ] && { echo "$ANTHROPIC_MODEL"; return; }
+    if command -v jq >/dev/null 2>&1 && [ -r "$HOME/.claude/settings.json" ]; then
+        jq -r '.model // empty' "$HOME/.claude/settings.json" 2>/dev/null
+    fi
+}
+
+claude() {
+    local arg effort
+
+    # 副コマンド（claude mcp / update など）は --effort を解さない
+    case "${1-}" in
+        agents|auth|auto-mode|doctor|gateway|import|install|mcp|plugin|plugins|project|setup-token|ultrareview|update|upgrade)
+            command claude "$@"
+            return
+            ;;
+    esac
+
+    # 明示の --effort は尊重する
+    for arg in "$@"; do
+        case $arg in
+            --effort|--effort=*) command claude "$@"; return ;;
+        esac
+    done
+
+    effort=$(_claude_effort_for_model "$(_claude_model_for_effort "$@")")
+    if [ -n "$effort" ]; then
+        command claude --effort "$effort" "$@"
+    else
+        command claude "$@"
+    fi
+}
