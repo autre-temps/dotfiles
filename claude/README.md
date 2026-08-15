@@ -12,14 +12,15 @@ claude/
 ├── README.md                    このファイル
 ├── CLAUDE.md                    全般の行動規範（モデルへの共通指示）
 ├── settings.json                Claude Code の共通設定（permissions / hooks / 表示など）
-├── mcp-servers.json             MCP サーバー設定（~/.claude.json へマージ）
 ├── hooks/
 │   └── bash-guard.sh            Bash 実行前の門番（破壊的コマンド・秘密情報の検知）
 ├── output-styles/
 │   └── vampire-maid.md          出力スタイル「Vampire Maid」
 └── skills/
-    └── commit/
-        └── SKILL.md             /commit スキル（安全な Git コミット手順）
+    ├── commit/
+    │   └── SKILL.md             /commit スキル（安全な Git コミット手順）
+    └── japanese-tech-writing/
+        └── SKILL.md             日本語技術文書の文章規範
 ```
 
 ## 各ファイルの内容
@@ -32,24 +33,24 @@ Claude Code 全体に効かせる行動規範です。`~/.claude/CLAUDE.md` と�
 
 Claude Code の共通設定です。主な項目は次のとおりです。
 
-- **`permissions`** — `allow` / `deny` / `ask` でツール実行の許否を制御します。
+- **`permissions`** — `allow` / `deny` / `ask` でツール実行の許否を制御します。`defaultMode` は `auto`（実行前に別モデルの classifier が審査し、逸脱した操作だけを差し止めるモード）で、`disableBypassPermissionsMode` により無審査の `bypassPermissions` は封じています。
   - `deny` で `sudo`・`chmod`・`chown`・`mkfs`・`dd`・`rm -rf`・`crontab`・シェル eval 系（`bash -c` / `python -c` 等）を禁止し、`.env*` や秘密鍵（`id_rsa` / `id_ed25519`）・クラウド認証情報の読み書きも禁止しています。
-  - `ask` で `git push`・`git reset --hard`・`git rebase`・`wget`・`curl`・`docker`・`npm publish`・`rm` など、取り消しが難しい操作や外部送信を確認付きにしています。
-- **`sandbox`** — Bash 実行をファイルシステム・ネットワークごと隔離します。`enabled` かつ `failIfUnavailable` のため、砂上の檻を組めない環境では Bash を止めます。Linux でこの隔離を支えるのは `bubblewrap`（`bwrap`、コマンドの隔離）と `socat`（許可ドメインへのネットワーク濾過）で、`install.sh` が apt で導入します。
+  - `ask` で `git push`・`git reset --hard`・`git rebase`・`wget`・`curl`・`docker`・`npm publish`・`rm` など、取り消しが難しい操作や外部送信を確認付きにしています。`ask` は `auto` モードでも classifier を迂回して必ず停止するため、ここに置くのは人の目を通したいものだけに絞ります（`cat`・`echo` のような読むだけの操作は置きません）。
+- **`sandbox`** — Bash 実行をファイルシステム・ネットワークごと隔離する設定です。現在は `enabled: false` で伏せてあり、防壁は `permissions` と `bash-guard.sh` が担っています。有効にすれば、書き込み先・通信先を OS が強制する層が加わります。Linux でこの隔離を支えるのは `bubblewrap`（`bwrap`、コマンドの隔離）と `socat`（許可ドメインへのネットワーク濾過）で、`install.sh` が apt で導入済みです。`failIfUnavailable` を立ててあるため、有効化後に檻を組めない環境では Bash を止めます。
 - **`hooks`** — ツール実行の前後に走るフックです。
   - `PreToolUse`（Bash）: [`hooks/bash-guard.sh`](hooks/bash-guard.sh) を呼び、破壊的コマンドと秘密情報への接触を差し止めます（後述）。
   - `PostToolUse`（Write/Edit）: `.js` / `.ts` 系は `prettier`、`.py` は `uv run ruff format` で自動整形し、Bash コマンドは `~/.claude/command_history.log` に記録します。
   - `Stop`: セッション終了時に Windows 通知音を鳴らし、`command_history.log` が 1MB を超えていれば空にします。
   - `Notification`: 通知イベント時に Windows の nudge 音を鳴らします。
 - **表示・挙動**
-  - `model`: `claude-opus-4-6`
+  - `model`: `opus[1m]`（1M コンテキストの Opus）
   - `outputStyle`: `Vampire Maid`
   - `language`: `japanese`
   - `theme`: `dark`
-  - `effortLevel`: `high`
+  - `effortLevel`: `xhigh`
   - `spinnerVerbs`: スピナー表示を `給仕中` に置き換え
-  - `statusLine`: [ccstatusline](https://www.npmjs.com/package/ccstatusline) を利用。`bun add -g ccusage ccstatusline` でグローバル導入し、`~/.bun/bin` の実体を直に呼びます（`npx` での都度取得はしません）。
-  - `enabledPlugins`: `frontend-design` プラグインを有効化
+  - `statusLine`: [ccstatusline](https://www.npmjs.com/package/ccstatusline) を利用。`install.sh` が `bun install -g ccstatusline` で導入し、`~/.local/bin/ccstatusline` の実体を絶対パスで直に呼びます（`npx` での都度取得はしません）。表示の設定は [`ccstatusline/settings.json`](../ccstatusline/settings.json) にあり、`~/.config/ccstatusline/settings.json` へ symlink されます。
+  - `enabledPlugins`: `frontend-design@claude-plugins-official` プラグインを有効化
 
 ### `hooks/bash-guard.sh`
 
@@ -68,9 +69,16 @@ Claude Code の共通設定です。主な項目は次のとおりです。
 
 `/commit` スキルの定義です。Python プロジェクト（`uv run` + `ruff` + `pytest`）を前提に、状態確認 → 変更の整理 → チェック → メッセージ案作成 → 確認ゲート、という手順で安全にコミットを準備します。明示的な確認なしにはコミットせず、秘密情報を含めない方針を組み込んでいます。
 
-### `mcp-servers.json`
+### `skills/japanese-tech-writing/SKILL.md`
 
-MCP（Model Context Protocol）サーバーの設定です。`install.sh` が `~/.claude.json` の `mcpServers` へマージします（symlink ではなくマージ。冪等）。`~/.claude.json` が未存在の場合はそのまま書き出します。
+日本語の技術文書・書籍原稿の文章規範です。一文一行や脚注といった整形、パラグラフライティングによる段落構成、論証の厳密さ、読み手の負荷の管理、冗長の排除などを定めます。日本語で章・記事・解説文を書くとき、また推敲するときに働きます。
+
+> [!NOTE]
+> このスキルは `install.sh` の symlink 対象に入っていないため、`~/.claude/skills/` へは展開されていません。利用するには `install.sh` へ結び付けを追加してください。
+
+### MCP サーバー
+
+MCP（Model Context Protocol）サーバーは設定ファイルとしては持たず、`install.sh` が `claude mcp add-json --scope user` で登録します（既に登録済みなら飛ばすため冪等）。現在登録するのは `pdf-mcp`（`uvx` 経由で起動。PDF の抽出・検索・構造解析）です。
 
 ### `output-styles/vampire-maid.md`
 
@@ -88,7 +96,7 @@ MCP（Model Context Protocol）サーバーの設定です。`install.sh` が `~
 - `claude/output-styles/vampire-maid.md` → `~/.claude/output-styles/vampire-maid.md`
 - `claude/skills/commit/SKILL.md` → `~/.claude/skills/commit/SKILL.md`
 
-さらに `claude/mcp-servers.json` の `mcpServers` を `~/.claude.json` へマージします（symlink ではなくマージ。冪等）。
+さらに MCP サーバー `pdf-mcp` を `claude mcp add-json --scope user` で登録します（symlink ではなく登録。冪等）。
 
 > [!NOTE]
 > `~/.claude` 側に実体ファイルが既にある場合、`install.sh` は上書きせず `.bak.<epoch>` へ退避してから symlink を結びます。退避先は元の場所に残るので、必要なら後から戻せます。
