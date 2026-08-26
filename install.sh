@@ -51,9 +51,10 @@ export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 # --- 1. apt パッケージ ---------------------------------------------------
 # build-essential: treesitter の :TSUpdate に C コンパイラ/make が要る。
 # keychain: bashrc の ssh-agent 管理。
-# bubblewrap / socat: Claude Code の sandbox（settings.json で enabled かつ failIfUnavailable）が
-#   Linux で使う。bwrap がコマンドを隔離し、socat がネットワーク濾過（許可ドメインへの
-#   プロキシ仲介）を担う。いずれか欠けると sandbox 化できず Bash が止まる。
+# bubblewrap / socat: Claude Code の sandbox が Linux で使う。bwrap がコマンドを隔離し、
+#   socat がネットワーク濾過（許可ドメインへのプロキシ仲介）を担う。settings.json では
+#   現在 enabled: false だが failIfUnavailable を立ててあるため、有効化したときに
+#   いずれか欠けると sandbox 化できず Bash が止まる。先回りして入れておく。
 # ripgrep: fzf-lua の live grep が内部で使う高速全文検索ツール。
 # poppler-utils: pdftotext/pdfinfo 等。pdf-mcp を補う CLI 操作用。
 # pandoc: PDF→Markdown 等の文書変換。

@@ -116,12 +116,7 @@ spec は [`lua/plugins/flash.lua`](lua/plugins/flash.lua)。
 [ibhagwan/fzf-lua](https://github.com/ibhagwan/fzf-lua) による全文検索・ファイル/バッファ絞り込み・LSP ナビゲーション。
 spec は [`lua/plugins/fzf-lua.lua`](lua/plugins/fzf-lua.lua)。
 
-`~/.fzf` の fzf バイナリを直接利用する。プレビューは fzf-lua 内蔵のレンダラーを使うため bat は不要。グレップには **ripgrep** (`rg`) が入っていると速度と精度が格段に上がる（未導入の場合は `grep` で動作するが低速）。
-
-```sh
-# ripgrep の導入（強く推奨）
-sudo apt install ripgrep
-```
+`~/.fzf` の fzf バイナリを直接利用する。プレビューは fzf-lua 内蔵のレンダラーを使うため bat は不要。グレップには **ripgrep** (`rg`) を使う（未導入の場合は `grep` にフォールバックするが低速）。ripgrep は母屋の [`install.sh`](../install.sh) が apt で導入する。
 
 ### キーマップ
 
@@ -274,7 +269,7 @@ Rust 製のファジーマッチャーを内蔵しており、バイナリ同梱
 [stevearc/conform.nvim](https://github.com/stevearc/conform.nvim) による保存時フォーマット。
 spec は [`lua/plugins/conform.lua`](lua/plugins/conform.lua)。
 
-`BufWritePre` で自動実行し、Python ファイルに対して Mason が導入した ruff で `ruff_organize_imports → ruff_format` の順に整形する。LSP フォーマットは使わず ruff バイナリを直接呼び出す。タイムアウトは 1000ms。
+`BufWritePre` で自動実行し、Python ファイルに対して `uv tool install` で global 導入した ruff で `ruff_organize_imports → ruff_format` の順に整形する。LSP フォーマットは使わず ruff バイナリを直接呼び出す。タイムアウトは 1000ms。
 
 ### コマンド
 
@@ -404,7 +399,7 @@ spec は [`lua/plugins/which-key.lua`](lua/plugins/which-key.lua)。
 [Mofiqul/dracula.nvim](https://github.com/Mofiqul/dracula.nvim) による Dracula カラースキーム。
 spec は [`lua/plugins/dracula.lua`](lua/plugins/dracula.lua)。
 
-`priority = 1000` で最優先・即時ロードし、他プラグインの colorscheme 参照（lualine の `theme = "auto"` 等）より先に適用する。有効化は `lua/config/base.lua` の `colorscheme dracula`。
+`priority = 1000` で最優先・即時ロードし、他プラグインの colorscheme 参照（lualine の `theme = "auto"` 等）より先に適用する。有効化は [`init.lua`](init.lua) 末尾の `vim.cmd.colorscheme("dracula")`。
 
 ## dropbar.nvim（winbar パンくずリスト）
 

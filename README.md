@@ -13,7 +13,7 @@ dotfiles/
 ├── install.sh     必要なコマンド類の導入スクリプト（dotfiles-setup として再利用可）
 ├── nvim/          Neovim 設定（lazy.nvim ベース・Python 開発向け）→ ~/.config/nvim
 ├── starship/      Starship プロンプト設定（Dracula 配色・二段組・Nerd Font アイコン）→ ~/.config/starship.toml
-├── claude/        Claude Code 設定（settings / skills / output-styles）→ ~/.claude 配下
+├── claude/        Claude Code 設定（CLAUDE.md / settings / hooks / skills / output-styles）→ ~/.claude 配下
 ├── ccstatusline/  ccstatusline 設定（Claude Code のステータスライン）→ ~/.config/ccstatusline/settings.json
 ├── bash/          bash 設定（bashrc・starship 初期化の TTY ガード）→ ~/.bashrc
 ├── git/           Git 設定（gitconfig）→ ~/.gitconfig
@@ -75,13 +75,13 @@ nvim/
 
 ## claude
 
-[Claude Code](https://claude.com/claude-code) の共有可能な設定（`settings.json` / `/commit` スキル / 出力スタイル）。`~/.claude` 配下には認証情報や履歴が同居するため館ごとは symlink せず、必要なファイルだけを個別に結ぶ（`install.sh` が行う）。
+[Claude Code](https://claude.com/claude-code) の共有可能な設定（`CLAUDE.md` / `settings.json` / フック / スキル / 出力スタイル）。`~/.claude` 配下には認証情報や履歴が同居するため館ごとは symlink せず、必要なファイルだけを個別に結ぶ（`install.sh` が行う）。
 
 詳細は [`claude/README.md`](claude/README.md) を参照。
 
 ## ccstatusline
 
-[ccstatusline](https://www.npmjs.com/package/ccstatusline) による Claude Code のステータスライン表示の設定。モデル名・コンテキスト使用率・セッション使用量・Git ブランチ・時刻（`HH:MM`）を区切り付きで一行に並べる。ステータスライン本体は `claude/settings.json` の `statusLine` から呼び出される（本体の導入手順は [`claude/README.md`](claude/README.md) を参照）。ファイル単体を `~/.config/ccstatusline/settings.json` へ symlink する（`install.sh` が行う）。
+[ccstatusline](https://www.npmjs.com/package/ccstatusline) による Claude Code のステータスライン表示の設定。二段組で、1 段目にモデル名・コンテキスト使用率・セッション使用量・週次使用量・Git ブランチ、2 段目にセッションと週次それぞれのリセットまでの残り時間・時刻（`HH:MM`）を区切り付きで並べる。ステータスライン本体は `claude/settings.json` の `statusLine` から呼び出される（本体の導入手順は [`claude/README.md`](claude/README.md) を参照）。ファイル単体を `~/.config/ccstatusline/settings.json` へ symlink する（`install.sh` が行う）。
 
 ## bash
 
@@ -108,7 +108,7 @@ bash ~/dotfiles/install.sh --no-apt   # sudo apt を使う段を飛ばす
 
 導入されるもの:
 
-- apt: `git` / `curl` / `unzip` / `build-essential`（treesitter のビルド用）/ `keychain` / `ca-certificates` / `bubblewrap` / `socat`（Claude Code sandbox 用）/ `ripgrep`（fzf-lua の live grep 用）/ `shfmt`（シェルスクリプトフォーマッタ）
+- apt: `git` / `curl` / `unzip` / `build-essential`（treesitter のビルド用）/ `keychain` / `ca-certificates` / `bubblewrap` / `socat`（Claude Code sandbox 用）/ `ripgrep`（fzf-lua の live grep 用）/ `shfmt`（シェルスクリプトフォーマッタ）/ `poppler-utils`・`pandoc`・`tesseract-ocr`・`tesseract-ocr-jpn`（PDF の抽出・変換・日本語 OCR）/ `man-db`（man と apropos。Debian の最小構成には入っていない）
 - `nvim`（公式 tarball。Debian 素の apt 版は古く `vim.uv` を満たさないため）
 - `uv`（Python ツールチェーン）・`bun`（JS ツールチェーン）・`starship`（プロンプト）
 - `fzf`（`~/.fzf.bash` を生成。`--no-update-rc` で bashrc は触らない）
@@ -119,7 +119,7 @@ bash ~/dotfiles/install.sh --no-apt   # sudo apt を使う段を飛ばす
 
 導入に続けて、**symlink を展開**する。`bash/bashrc`→`~/.bashrc`、`starship/starship.toml`→`~/.config/starship.toml`、`nvim`→`~/.config/nvim`、`ccstatusline/settings.json`→`~/.config/ccstatusline/settings.json`、`git/gitconfig`→`~/.gitconfig`、`gh/config.yml`→`~/.config/gh/config.yml`、`claude/` の設定・フック・出力スタイル・スキルを `~/.claude` 配下へ、それぞれ結ぶ。展開先に実体ファイルがある場合は `.bak.<epoch>` へ退避してから結ぶため、上書きで失われることはない。`~/.claude` は認証情報や履歴が同居するため館ごとは結ばず、必要なファイルだけを個別に結ぶ。
 
-さらに `claude/mcp-servers.json` の `mcpServers` を `~/.claude.json` へマージする（冪等）。
+さらに MCP サーバー `pdf-mcp` を `claude mcp add-json --scope user` で user スコープへ登録する（登録済みなら skip するため冪等）。
 
 さらに末尾で、自らを `~/.local/bin/dotfiles-setup` へ symlink する。以降はどこからでも `dotfiles-setup`（または `dotfiles-setup --no-apt`）の一声で再実行できる。
 

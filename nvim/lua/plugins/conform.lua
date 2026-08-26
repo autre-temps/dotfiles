@@ -1,5 +1,6 @@
 -- Formatting on save via ruff (organize imports + format). Uses the ruff
--- binary that Mason installs; does not rely on LSP formatting.
+-- binary installed globally with `uv tool install ruff`; does not rely on LSP
+-- formatting.
 return {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
