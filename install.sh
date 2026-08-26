@@ -209,6 +209,7 @@ link "$DOTFILES_DIR/claude/hooks/bash-guard.sh" "$HOME/.claude/hooks/bash-guard.
 link "$DOTFILES_DIR/claude/hooks/web-guard.sh" "$HOME/.claude/hooks/web-guard.sh"
 link "$DOTFILES_DIR/claude/output-styles/vampire-maid.md" "$HOME/.claude/output-styles/vampire-maid.md"
 link "$DOTFILES_DIR/claude/skills/commit/SKILL.md" "$HOME/.claude/skills/commit/SKILL.md"
+link "$DOTFILES_DIR/claude/skills/japanese-tech-writing/SKILL.md" "$HOME/.claude/skills/japanese-tech-writing/SKILL.md"
 link "$DOTFILES_DIR/git/gitconfig" "$HOME/.gitconfig"
 link "$DOTFILES_DIR/gh/config.yml" "$HOME/.config/gh/config.yml"
 
