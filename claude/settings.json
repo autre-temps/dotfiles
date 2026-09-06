@@ -261,5 +261,12 @@
   },
   "effortLevel": "xhigh",
   "skipWorkflowUsageWarning": true,
-  "theme": "dark"
+  "theme": "dark",
+  "editorMode": "vim",
+  "vimInsertModeRemaps": {
+    "jj": "<Esc>"
+  },
+  "env": {
+    "EDITOR": "nvim"
+  }
 }
