@@ -59,7 +59,7 @@ Claude Code の共通設定です。主な項目は次のとおりです。
   - `language`: `japanese`
   - `theme`: `dark`
   - `editorMode`: `vim`。プロンプト入力欄を vim のキー操作で編集する。`vimInsertModeRemaps` で INSERT モード中の `jj` を `<Esc>` に割り当て、NORMAL モードへ戻れるようにしている
-  - `env`: `EDITOR=nvim`。`Ctrl+G` で開く外部エディタを Neovim にする。シェルの `$EDITOR` は変えず、Claude Code のセッション内だけに効く
+  - `env`: `EDITOR=nvim` と `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`。前者は `Ctrl+G` で開く外部エディタを Neovim にする。シェルの `$EDITOR` は変えず、Claude Code のセッション内だけに効く。後者は実験機能のエージェントチームを有効にする
   - `effortLevel`: `xhigh`。セッション開始時にのみ読まれる単一の値で、モデル別の対応表は持てない。モデルに応じて振り分けるのは [`bash/bashrc`](../bash/bashrc) の `claude` ラッパの役目で、起動時に `--effort` を補う（opus 5 なら `xhigh`、fable 5 なら `high`）
   - `spinnerVerbs`: スピナー表示を `給仕中` に置き換え
   - `statusLine`: [ccstatusline](https://www.npmjs.com/package/ccstatusline) を利用。`install.sh` が `bun install -g ccstatusline` で導入し、`~/.local/bin/ccstatusline` の実体を絶対パスで直に呼びます（`npx` での都度取得はしません）。表示の設定は [`ccstatusline/settings.json`](../ccstatusline/settings.json) にあり、`~/.config/ccstatusline/settings.json` へ symlink されます。

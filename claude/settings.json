@@ -1,4 +1,8 @@
 {
+  "env": {
+    "EDITOR": "nvim",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(git status)",
@@ -265,8 +269,5 @@
   "editorMode": "vim",
   "vimInsertModeRemaps": {
     "jj": "<Esc>"
-  },
-  "env": {
-    "EDITOR": "nvim"
   }
 }
