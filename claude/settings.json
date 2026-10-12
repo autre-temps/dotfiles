@@ -126,6 +126,9 @@
     "disableBypassPermissionsMode": "disable"
   },
   "model": "opus[1m]",
+  "attribution": {
+    "commit": ""
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -134,6 +137,10 @@
           {
             "type": "command",
             "command": "bash \"$HOME/.claude/hooks/bash-guard.sh\""
+          },
+          {
+            "type": "command",
+            "command": "jq -c '(.tool_input.command // \"\") | select(test(\"git[^\\n]*commit\") and test(\"co-authored-by *[:=]\"; \"i\")) | {hookSpecificOutput: {hookEventName: \"PreToolUse\", permissionDecision: \"deny\", permissionDecisionReason: \"コミットメッセージに Co-Authored-By トレーラーは入れない方針です。該当行を除いてから git commit をやり直してください。\"}}'"
           }
         ]
       },
