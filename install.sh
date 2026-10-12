@@ -212,6 +212,8 @@ link "$DOTFILES_DIR/claude/output-styles/vampire-maid.md" "$HOME/.claude/output-
 link "$DOTFILES_DIR/claude/skills/commit/SKILL.md" "$HOME/.claude/skills/commit/SKILL.md"
 link "$DOTFILES_DIR/claude/skills/japanese-tech-writing/SKILL.md" "$HOME/.claude/skills/japanese-tech-writing/SKILL.md"
 link "$DOTFILES_DIR/claude/skills/ochiai-paper-summary/SKILL.md" "$HOME/.claude/skills/ochiai-paper-summary/SKILL.md"
+link "$DOTFILES_DIR/claude/skills/paper-survey/SKILL.md" "$HOME/.claude/skills/paper-survey/SKILL.md"
+link "$DOTFILES_DIR/claude/skills/paper-survey/references/sources.md" "$HOME/.claude/skills/paper-survey/references/sources.md"
 # サブエージェントは定義ファイルごとに結ぶ。ディレクトリごと結ぶと、/agents で
 # その場限りに作った定義までリポジトリへ紛れ込むため。
 for f in "$DOTFILES_DIR"/claude/agents/*.md; do

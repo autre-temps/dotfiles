@@ -33,8 +33,12 @@ claude/
     │   └── SKILL.md             /commit スキル（安全な Git コミット手順）
     ├── japanese-tech-writing/
     │   └── SKILL.md             日本語技術文書の文章規範
-    └── ochiai-paper-summary/
-        └── SKILL.md             落合フォーマットによる論文要約
+    ├── ochiai-paper-summary/
+    │   └── SKILL.md             落合フォーマットによる論文要約
+    └── paper-survey/
+        ├── SKILL.md             NLP 論文のサーベイの手順
+        └── references/
+            └── sources.md       情報源ごとの検索と取得の手引き
 ```
 
 ## 各ファイルの内容
@@ -121,6 +125,12 @@ Claude Code の共通設定です。主な項目は次のとおりです。
 
 学術論文を、落合陽一氏の論文まとめフォーマット（「どんなもの？」から「次に読むべき論文は？」までの六つの問い）で Markdown 文書に要約するスキルです。原典は筑波大学の講義「先端技術とメディア表現」（#FTMA15）のスライドで、六つの見出しは原典の文言のまま使います。原典はスライド 1 枚にまとめる型ですが、ここでは書誌情報のヘッダを加えた文書として出力します。PDF のパス、arXiv の URL や ID、DOI、論文タイトルを渡して `/ochiai-paper-summary` と呼ぶほか、論文の要約を頼まれたときにモデル側からも起動されます。記憶ではなく本文に拠ること、数値に出典の位置を添えること、著者の主張と要約者の見解を書き分けることを求めています。
 
+### `skills/paper-survey/`
+
+NLP の研究テーマについて先行研究を集め、出典を検証したサーベイ文書にまとめるスキルです。検索の範囲は、ACL Anthology に収録された NLP の国際会議と論文誌、NeurIPS・ICLR・ICML などの AI 系の proceedings、arXiv の三つに限ります。手順は体系的文献レビューの指針（Kitchenham & Charters、PRISMA 2020、Wohlin の snowballing）に拠り、プロトコルの決定、検索、重複の除去と版の統合、スクリーニング、全文の読解、引用をたどる探索、統合、引用の検証の順に進みます。全文の読解は論文ごとに `paper-reader` サブエージェントへ並行して任せ、15 本を超える見込みになったら了承を求めます。テーマを渡して `/paper-survey` と呼ぶほか、関連研究の調査を頼まれたときにモデル側からも起動されます。
+
+情報源ごとの URL の規則、API のクエリ、レート制限、採録先の確かめ方は `references/sources.md` に分けています。`SKILL.md` から参照し、検索に取りかかるときにだけ読み込ませることで、スキル本体を短く保つためです。`allowed-tools` では、論文の情報源と Semantic Scholar への WebFetch と WebSearch を、スキルの実行中に限って確認なしで使えるようにしています。
+
 ### `agents/`
 
 メインの会話から仕事を切り出して任せる、カスタムサブエージェントの定義です。
@@ -177,7 +187,7 @@ MCP（Model Context Protocol）サーバーは設定ファイルとしては持�
 
 各ファイルを、対応する `~/.claude` 配下へ symlink で結びます。リポジトリ側を編集すれば、そのまま `~/.claude` に反映されます。この展開はリポジトリ直下の [`install.sh`](../install.sh) が一括して行うため、手作業は不要です。
 
-`install.sh` が結ぶのは次の八つ（`~/.claude` を館ごと結ばず、必要なファイルだけを個別に結ぶ方針です）。
+`install.sh` が結ぶのは次の十（`~/.claude` を館ごと結ばず、必要なファイルだけを個別に結ぶ方針です）。
 
 - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md`
 - `claude/settings.json` → `~/.claude/settings.json`
@@ -187,6 +197,8 @@ MCP（Model Context Protocol）サーバーは設定ファイルとしては持�
 - `claude/skills/commit/SKILL.md` → `~/.claude/skills/commit/SKILL.md`
 - `claude/skills/japanese-tech-writing/SKILL.md` → `~/.claude/skills/japanese-tech-writing/SKILL.md`
 - `claude/skills/ochiai-paper-summary/SKILL.md` → `~/.claude/skills/ochiai-paper-summary/SKILL.md`
+- `claude/skills/paper-survey/SKILL.md` → `~/.claude/skills/paper-survey/SKILL.md`
+- `claude/skills/paper-survey/references/sources.md` → `~/.claude/skills/paper-survey/references/sources.md`
 
 これに加えて、`claude/agents/` 配下の `*.md` を一つずつ `~/.claude/agents/` へ結びます。
 ディレクトリごと結ばないのは、`/agents` でその場限りに作った定義がリポジトリへ紛れ込むのを避けるためです。
