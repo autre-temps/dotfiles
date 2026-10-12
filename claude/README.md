@@ -21,7 +21,8 @@ claude/
 │   ├── test-writer.md           テストの設計と記述
 │   ├── verifier.md              作業が依頼の要件を満たすかの検収
 │   ├── doc-sync.md              変更に合わせた文書の追随
-│   └── researcher.md            Web と公式ドキュメントの調査
+│   ├── researcher.md            Web と公式ドキュメントの調査
+│   └── paper-reader.md          論文一本の読解と根拠付きの読解メモ
 ├── hooks/
 │   ├── bash-guard.sh            Bash 実行前の門番（破壊的コマンド・秘密情報の検知）
 │   └── web-guard.sh             Web 取得後の検疫係（プロンプトインジェクションの伏せ字化）
@@ -137,8 +138,9 @@ Claude Code の共通設定です。主な項目は次のとおりです。
 | `verifier` | `inherit` | Read, Grep, Glob, Bash | 元の依頼と作業の報告を実物と突き合わせ、要件ごとに合否を判定する |
 | `doc-sync` | `sonnet` | Read, Edit, Write, Grep, Glob, Bash | 変更差分から影響する記述を洗い出し、文書を実態に合わせる |
 | `researcher` | `sonnet` | WebSearch, WebFetch, Read, Grep, Glob | 一次情報を当たり、出典付きで要点をまとめる |
+| `paper-reader` | `sonnet` | Read, Grep, Glob, WebFetch, WebSearch, pdf-mcp の読み取り系 | 論文を一本読み、主張と根拠の位置、原文の抜粋を添えた読解メモを返す |
 
-モデルは、手順が定型で量をこなす役（探索、テスト実行、文書の追随、調査）を `sonnet` に、判断の質がそのまま成果を左右する役（レビュー、監査、デバッグ、テストの設計、検収）を `inherit` にしています。
+モデルは、手順が定型で量をこなす役（探索、テスト実行、文書の追随、調査、論文の読解）を `sonnet` に、判断の質がそのまま成果を左右する役（レビュー、監査、デバッグ、テストの設計、検収）を `inherit` にしています。
 `inherit` はメインの会話と同じモデルを使う指定で、`settings.json` の `model` が `opus[1m]` である現在は Opus で動きます。
 
 ツールは役目に要る最小限に絞っています。
@@ -149,6 +151,9 @@ Edit と Write を持つのは、書き換えそのものを役目とする `deb
 そこを抑えているのは各定義の指示と、サブエージェントにも継承される `settings.json` の `permissions` および `hooks` です。
 同じ理由で、`memory` フィールドは使っていません。
 これを有効にすると Write と Edit が自動で付与され、読み取り専用の前提が崩れるためです。
+
+`paper-reader` は `paper-survey` から論文の本数だけ並行して起動されるため、`maxTurns: 40` で一体あたりのターン数に上限を設けています。
+pdf-mcp のツールは、PDF の情報、目次、検索、ページの読み取りと画像化の五つだけを列挙し、キャッシュの削除などは渡していません。
 
 `doc-sync` だけは `skills` フィールドで `japanese-tech-writing` を起動時に読み込み、日本語の文書をその規範で書きます。
 既存の文書の整形（改行の仕方など）と規範が食い違うときは、既存の文書に合わせるよう指示しています。
