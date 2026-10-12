@@ -264,10 +264,16 @@
     ]
   },
   "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "high"
+    }
+  },
   "skipWorkflowUsageWarning": true,
   "theme": "dark",
   "editorMode": "vim",
   "vimInsertModeRemaps": {
     "jj": "<Esc>"
-  }
+  },
+  "agentPushNotifEnabled": true
 }
