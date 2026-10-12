@@ -211,6 +211,12 @@ link "$DOTFILES_DIR/claude/hooks/web-guard.sh" "$HOME/.claude/hooks/web-guard.sh
 link "$DOTFILES_DIR/claude/output-styles/vampire-maid.md" "$HOME/.claude/output-styles/vampire-maid.md"
 link "$DOTFILES_DIR/claude/skills/commit/SKILL.md" "$HOME/.claude/skills/commit/SKILL.md"
 link "$DOTFILES_DIR/claude/skills/japanese-tech-writing/SKILL.md" "$HOME/.claude/skills/japanese-tech-writing/SKILL.md"
+# サブエージェントは定義ファイルごとに結ぶ。ディレクトリごと結ぶと、/agents で
+# その場限りに作った定義までリポジトリへ紛れ込むため。
+for f in "$DOTFILES_DIR"/claude/agents/*.md; do
+	[ -e "$f" ] || continue
+	link "$f" "$HOME/.claude/agents/$(basename "$f")"
+done
 link "$DOTFILES_DIR/git/gitconfig" "$HOME/.gitconfig"
 link "$DOTFILES_DIR/gh/config.yml" "$HOME/.config/gh/config.yml"
 

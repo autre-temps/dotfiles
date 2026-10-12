@@ -1,7 +1,7 @@
 # claude
 
 [Claude Code](https://claude.com/claude-code) の個人設定のうち、共有・バージョン管理してよい部分だけを切り出したものです。この dotfiles の一部として管理し、`~/.claude` 配下へ **symlink** で展開します。
-`~/.claude` を丸ごと追跡するのではなく、再現に必要な「設定・スキル・出力スタイル」のみを収めています。認証情報や履歴などの機密ファイルは意図的に含めていません。
+`~/.claude` を丸ごと追跡するのではなく、再現に必要な「設定・スキル・サブエージェント・出力スタイル」のみを収めています。認証情報や履歴などの機密ファイルは意図的に含めていません。
 
 ## 構成
 
@@ -12,6 +12,16 @@ claude/
 ├── README.md                    このファイル
 ├── CLAUDE.md                    全般の行動規範（モデルへの共通指示）
 ├── settings.json                Claude Code の共通設定（permissions / hooks / 表示など）
+├── agents/                      カスタムサブエージェントの定義
+│   ├── explore.md               コードベースの探索（組み込みの Explore を置き換える）
+│   ├── code-reviewer.md         変更差分のレビュー
+│   ├── security-reviewer.md     セキュリティ観点の監査
+│   ├── debugger.md              不具合の原因究明と最小限の修正
+│   ├── test-runner.md           テストの実行と失敗の要約
+│   ├── test-writer.md           テストの設計と記述
+│   ├── verifier.md              作業が依頼の要件を満たすかの検収
+│   ├── doc-sync.md              変更に合わせた文書の追随
+│   └── researcher.md            Web と公式ドキュメントの調査
 ├── hooks/
 │   ├── bash-guard.sh            Bash 実行前の門番（破壊的コマンド・秘密情報の検知）
 │   └── web-guard.sh             Web 取得後の検疫係（プロンプトインジェクションの伏せ字化）
@@ -104,6 +114,46 @@ Claude Code の共通設定です。主な項目は次のとおりです。
 
 日本語の技術文書・書籍原稿の文章規範です。一文一行や脚注といった整形、パラグラフライティングによる段落構成、論証の厳密さ、読み手の負荷の管理、冗長の排除などを定めます。日本語で章・記事・解説文を書くとき、また推敲するときに働きます。
 
+### `agents/`
+
+メインの会話から仕事を切り出して任せる、カスタムサブエージェントの定義です。
+サブエージェントは独立した文脈で動き、結論だけを呼び出し元へ返します。
+探索のログや長いテスト出力でメインの文脈を埋めずに済むのが、切り出す主な理由です。
+
+| 名前 | モデル | ツール | 役目 |
+|---|---|---|---|
+| `Explore` | `sonnet` | Read, Grep, Glob, Bash | コードベースを読み取り専用で探索し、所在と結論を返す |
+| `code-reviewer` | `inherit` | Read, Grep, Glob, Bash | 変更差分をレビューし、正しさの不具合を重大度順に指摘する |
+| `security-reviewer` | `inherit` | Read, Grep, Glob, Bash | 信頼できないデータの流れを追い、悪用できる弱点を指摘する |
+| `debugger` | `inherit` | Read, Edit, Write, Bash, Grep, Glob | 再現、仮説の検証、最小限の修正、確認までを行う |
+| `test-runner` | `sonnet` | Read, Grep, Glob, Bash | テスト、型検査、リンタを走らせ、失敗だけを要約する |
+| `test-writer` | `inherit` | Read, Edit, Write, Bash, Grep, Glob | 既存の流儀に倣ってテストを書き、誤りを捕えるかまで確かめる |
+| `verifier` | `inherit` | Read, Grep, Glob, Bash | 元の依頼と作業の報告を実物と突き合わせ、要件ごとに合否を判定する |
+| `doc-sync` | `sonnet` | Read, Edit, Write, Grep, Glob, Bash | 変更差分から影響する記述を洗い出し、文書を実態に合わせる |
+| `researcher` | `sonnet` | WebSearch, WebFetch, Read, Grep, Glob | 一次情報を当たり、出典付きで要点をまとめる |
+
+モデルは、手順が定型で量をこなす役（探索、テスト実行、文書の追随、調査）を `sonnet` に、判断の質がそのまま成果を左右する役（レビュー、監査、デバッグ、テストの設計、検収）を `inherit` にしています。
+`inherit` はメインの会話と同じモデルを使う指定で、`settings.json` の `model` が `opus[1m]` である現在は Opus で動きます。
+
+ツールは役目に要る最小限に絞っています。
+Edit と Write を持つのは、書き換えそのものを役目とする `debugger`、`test-writer`、`doc-sync` の三つです。
+このうち `test-writer` はテストだけを、`doc-sync` は文書だけを書き換えるよう、各定義の指示で範囲を限っています。
+レビュー、監査、検収の担当には Edit と Write を渡していないため、これらがコードを書き換えることはありません。
+ただし Bash を持つ担当は、シェル経由でならファイルを変えられます。
+そこを抑えているのは各定義の指示と、サブエージェントにも継承される `settings.json` の `permissions` および `hooks` です。
+同じ理由で、`memory` フィールドは使っていません。
+これを有効にすると Write と Edit が自動で付与され、読み取り専用の前提が崩れるためです。
+
+`doc-sync` だけは `skills` フィールドで `japanese-tech-writing` を起動時に読み込み、日本語の文書をその規範で書きます。
+既存の文書の整形（改行の仕方など）と規範が食い違うときは、既存の文書に合わせるよう指示しています。
+
+`explore.md` の `name` は、ファイル名と違って先頭が大文字の `Explore` です。
+サブエージェントの名前の照合は大文字と小文字を区別し、組み込みの `Explore` と同じ名前にしたときに限って、ユーザー定義の側がそれを置き換えます。
+小文字の `explore` にすると組み込みの `Explore` と並立し、メインの会話がどちらに任せるかが定まらなくなります。
+
+サブエージェントは `CLAUDE.md` と権限設定を引き継ぎますが、出力スタイル（Vampire Maid）は引き継ぎません。
+報告は中立な文体で返り、メインの会話がそれを受けて応答します。
+
 ### MCP サーバー
 
 MCP（Model Context Protocol）サーバーは設定ファイルとしては持たず、`install.sh` が `claude mcp add-json --scope user` で登録します（既に登録済みなら飛ばすため冪等）。現在登録するのは `pdf-mcp`（`uvx` 経由で起動。PDF の抽出・検索・構造解析）です。
@@ -125,6 +175,10 @@ MCP（Model Context Protocol）サーバーは設定ファイルとしては持�
 - `claude/output-styles/vampire-maid.md` → `~/.claude/output-styles/vampire-maid.md`
 - `claude/skills/commit/SKILL.md` → `~/.claude/skills/commit/SKILL.md`
 - `claude/skills/japanese-tech-writing/SKILL.md` → `~/.claude/skills/japanese-tech-writing/SKILL.md`
+
+これに加えて、`claude/agents/` 配下の `*.md` を一つずつ `~/.claude/agents/` へ結びます。
+ディレクトリごと結ばないのは、`/agents` でその場限りに作った定義がリポジトリへ紛れ込むのを避けるためです。
+定義を足すときは `claude/agents/` にファイルを置いて `install.sh` を再実行すれば、`install.sh` 側を書き換えずに展開されます。
 
 さらに MCP サーバー `pdf-mcp` を `claude mcp add-json --scope user` で登録します（symlink ではなく登録。冪等）。
 

@@ -13,7 +13,7 @@ dotfiles/
 ├── install.sh     必要なコマンド類の導入スクリプト（dotfiles-setup として再利用可）
 ├── nvim/          Neovim 設定（lazy.nvim ベース・Python 開発向け）→ ~/.config/nvim
 ├── starship/      Starship プロンプト設定（Dracula 配色・二段組・Nerd Font アイコン）→ ~/.config/starship.toml
-├── claude/        Claude Code 設定（CLAUDE.md / settings / hooks / skills / output-styles）→ ~/.claude 配下
+├── claude/        Claude Code 設定（CLAUDE.md / settings / hooks / skills / agents / output-styles）→ ~/.claude 配下
 ├── ccstatusline/  ccstatusline 設定（Claude Code のステータスライン）→ ~/.config/ccstatusline/settings.json
 ├── bash/          bash 設定（bashrc・starship 初期化の TTY ガード）→ ~/.bashrc
 ├── git/           Git 設定（gitconfig）→ ~/.gitconfig
@@ -75,7 +75,7 @@ nvim/
 
 ## claude
 
-[Claude Code](https://claude.com/claude-code) の共有可能な設定（`CLAUDE.md` / `settings.json` / フック / スキル / 出力スタイル）。`~/.claude` 配下には認証情報や履歴が同居するため館ごとは symlink せず、必要なファイルだけを個別に結ぶ（`install.sh` が行う）。
+[Claude Code](https://claude.com/claude-code) の共有可能な設定（`CLAUDE.md` / `settings.json` / フック / スキル / サブエージェント / 出力スタイル）。`~/.claude` 配下には認証情報や履歴が同居するため館ごとは symlink せず、必要なファイルだけを個別に結ぶ（`install.sh` が行う）。
 
 詳細は [`claude/README.md`](claude/README.md) を参照。
 
@@ -117,7 +117,7 @@ bash ~/dotfiles/install.sh --no-apt   # sudo apt を使う段を飛ばす
 - `stylua`（Lua フォーマッタ。GitHub Releases から `~/.local/bin` へ導入）
 - `gh`（GitHub CLI。公式 apt リポジトリ経由。`--no-apt` 時は skip）
 
-導入に続けて、**symlink を展開**する。`bash/bashrc`→`~/.bashrc`、`starship/starship.toml`→`~/.config/starship.toml`、`nvim`→`~/.config/nvim`、`ccstatusline/settings.json`→`~/.config/ccstatusline/settings.json`、`git/gitconfig`→`~/.gitconfig`、`gh/config.yml`→`~/.config/gh/config.yml`、`claude/` の設定・フック・出力スタイル・スキルを `~/.claude` 配下へ、それぞれ結ぶ。展開先に実体ファイルがある場合は `.bak.<epoch>` へ退避してから結ぶため、上書きで失われることはない。`~/.claude` は認証情報や履歴が同居するため館ごとは結ばず、必要なファイルだけを個別に結ぶ。
+導入に続けて、**symlink を展開**する。`bash/bashrc`→`~/.bashrc`、`starship/starship.toml`→`~/.config/starship.toml`、`nvim`→`~/.config/nvim`、`ccstatusline/settings.json`→`~/.config/ccstatusline/settings.json`、`git/gitconfig`→`~/.gitconfig`、`gh/config.yml`→`~/.config/gh/config.yml`、`claude/` の設定・フック・出力スタイル・スキル・サブエージェントを `~/.claude` 配下へ、それぞれ結ぶ。展開先に実体ファイルがある場合は `.bak.<epoch>` へ退避してから結ぶため、上書きで失われることはない。`~/.claude` は認証情報や履歴が同居するため館ごとは結ばず、必要なファイルだけを個別に結ぶ。
 
 さらに MCP サーバー `pdf-mcp` を `claude mcp add-json --scope user` で user スコープへ登録する（登録済みなら skip するため冪等）。
 
